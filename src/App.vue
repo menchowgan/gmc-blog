@@ -1,29 +1,26 @@
 <template>
-  <div class="header">
-    
-  </div>
   <div class="content-container">
-    <router-view/>
-   </div>
+    <router-view />
+  </div>
 </template>
 
-<style scoped>
-body{
+<style >
+body {
   padding: 0;
   margin: 0;
-}
-.header{
-  width: 100%;
-  height: 100px;
-  position: fixed;
-  top: 0;
-  z-index: 99;
-  background-color: aqua;
+  border: 0;
 }
 
-.content-container{
+.content-container {
+  padding: 0;
+  border: 0;
   width: 100%;
-  margin-top: 100px;
+  height: 3000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url("./assets/images/background.webp");
+  background-attachment: fixed;
 }
 
 #app {
@@ -32,6 +29,8 @@ body{
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  margin: 0;
+  padding: 0;
 }
 
 #nav {

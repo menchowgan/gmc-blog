@@ -1,0 +1,94 @@
+<template>
+  <div class="article-card">
+    <el-card
+      shadow="hover"
+      class="card"
+      :body-style="{ height: '96%', width: '100%' }"
+      v-for="item in articleSimpleInfos"
+      :key="item.id"
+    >
+      <div class="content">
+        <img :src="item.imgUrl" class="image" />
+        <div class="section">
+          <span class="title">{{ item.title }}</span>
+          <p>{{ item.content }}</p>
+          <el-button type="text" class="button">MORE</el-button>
+        </div>
+      </div>
+    </el-card>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { defineProps } from "vue";
+
+defineProps({
+  articleSimpleInfos: {
+    type: Array,
+    default: () => []
+  }
+})
+
+</script>
+
+<style scoped>
+.article-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.article-card .card {
+  width: 100%;
+  height: 360px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.article-card .card .content {
+  width: 100%;
+  height: 96%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.article-card .card .content .image {
+  display: block;
+  width: 28%;
+  margin-top: 30px; 
+  border-radius: 16px;
+}
+
+.article-card .card .content .title {
+  font-size: 30px;
+}
+
+.article-card .card .content .section {
+  width: 74%;
+  height: 100%;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.article-card .card .content p {
+  height: 80%;
+  font-size: 20px;
+  color: #999;
+  margin-top: 13px;
+  margin-left: 13px;
+}
+
+.button {
+  padding: 0;
+  min-height: auto;
+}
+
+</style>
