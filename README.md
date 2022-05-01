@@ -1,7 +1,5 @@
 # gmc-blog
-<<<<<<< HEAD
 个人博客搭建
-=======
 
 ## Project setup
 ```
@@ -25,4 +23,3 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
->>>>>>> fe40deb9df4b21d44fe96586bd36f6c95ec08a30

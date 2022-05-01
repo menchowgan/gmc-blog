@@ -1,7 +1,7 @@
 <template>
   <el-row class="types-container">
     <el-col :span="24">
-      <h1 class="selection" style="color: #3fc7f5">Selection</h1>
+      <h1 class="selection" style="height: 42px;color: #3fc7f5" @click="curParent = -1">{{title}}</h1>
       <section style="color: #3fc7f5">
         <div
           v-for="(item, index) in options"
@@ -9,16 +9,16 @@
           @click="() => onSelected(index)"
         >
           <p
-            style="font-size: 25px; font-family: Hiragino Sans GB"
+            style="line-height: 48px;font-size: 25px; font-family: Hiragino Sans GB"
             class="type-title"
           >
             {{ item.title }}
           </p>
           <p v-for="opt in item.opts" :key="opt.value">
-            <transition name="fade">
+            <transition name="fade" mode="out-in">
               <span
                 class="link"
-                style="font-size: 22px"
+                style="font-size: 22px;line-height: 30px"
                 v-if="curParent === index"
                 @click="() => onTypeChanged(opt.value)"
                 >{{ opt.label }}</span
@@ -33,25 +33,24 @@
 
 <script lang="ts" setup>
 import { ref } from "@vue/reactivity";
-import { defineEmits } from "@vue/runtime-core";
+import { defineEmits, defineProps } from "@vue/runtime-core";
 const emits = defineEmits(["typeChanged"]);
 
-const options = [
-  {
-    title: "生活 Life",
-    opts: [
-      { label: "旅游 Travel", value: "REAVEL" },
-      { label: "日常 Daily", value: "DAILY_LIFE" },
-    ],
+type OptionsModel = Array<{
+  title: string;
+  opts: Array<{label: string, value: string}>
+}>
+
+defineProps({
+  options: {
+    type: Array,
+    default: () => []
   },
-  {
-    title: "工作 Work",
-    opts: [
-      { label: "技术博客 Tec", value: "TEC_BLOG" },
-      { label: "工作计划 Plan", value: "JOB_PLAN" },
-    ],
-  },
-];
+  title: {
+    type: String,
+    default: "Selection"
+  }
+})
 
 const onTypeChanged = (newVal: string) => {
   emits("typeChanged", newVal);
@@ -85,7 +84,7 @@ const onSelected = (cur: number) => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.8s ease;
+  transition: opacity 0.5s ease;
 }
 
 .fade-enter-from,
