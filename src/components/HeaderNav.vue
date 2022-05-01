@@ -61,6 +61,8 @@ const selectedType = (type: string) => {
   background-color: #3fc7f5;
   color: #6e6e6e;
   animation: bounce 0.5s;
+  border: 5px solid #6e6e6e;
+  border-radius: 32px;
   transform: rotateZ(-10deg) scale(1.2);
 }
 
