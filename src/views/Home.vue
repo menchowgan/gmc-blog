@@ -4,7 +4,7 @@
       <p style="width: 60%; height: 100px; font-size: 70px; color: #ccc">
         <span style="font-size: 80px; color: #3fc7f5">Menchow</span> GAN
       </p>
-      <div style="width: 100%;height: 100px">
+      <div style="width: 100%; height: 100px">
         <HeaderNav @type-selected="onNavTypeSelected" />
       </div>
     </div>
@@ -44,6 +44,9 @@ import Carousel from "@/components/Carousel.vue";
 import HeaderNav from "@/components/HeaderNav.vue";
 import { ref } from "@vue/reactivity";
 import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const currentDate = ref<Date>(new Date());
 
@@ -79,74 +82,86 @@ const articleSimpleInfos: Array<ArticleSimpleInfoModel> = [
 const onTypeChanged = (type: string) => {
   console.log("new type selected", type);
   // if (type) {
-    // }
+  // }
 };
 
 const onNavTypeSelected = (type: string) => {
   console.log("new type selected", type);
-}
+  router.push({
+    name: "Creation",
+    query: {
+      type,
+      userId: "menchowgan",
+    },
+  });
+};
 </script>
 
-<style scoped>
-.body,
+<style scoped lang="scss">
+.body {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  opacity: 0.8;
+  .sider {
+    min-width: 350px;
+    flex: 2;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    @media screen and (max-width: 1500px) {
+      min-width: 350px;
+      width: 80%;
+      display: flex;
+      flex-direction: columns;
+      align-items: flex-start;
+      opacity: 0.8;
+    }
+  }
+}
 .header {
   width: 80%;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   opacity: 0.8;
-}
-.body .sider {
-  min-width: 350px;
-  flex: 2;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-}
-@media (max-width: 1500px) {
-  .body .sider {
-    min-width: 350px;
-    width: 80%;
+  .nav {
+    width: 60%;
+    height: 360px;
     display: flex;
-    flex-direction: columns;
+    flex-direction: column;
     align-items: flex-start;
-    opacity: 0.8;
+    p {
+      section {
+        font-size: 68px;
+        color: #3fc7f5;
+      }
+    }
+  }
+  .avator {
+    float: right;
+    width: 40%;
+    height: 360px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    .el-avatar {
+      margin-right: 128px;
+      border: 10px solid #ccc;
+      box-shadow: var(--el-box-shadow);
+    }
+  }
+  .my-photo {
+    width: 40%;
+    height: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
-.header .nav {
-  width: 60%;
-  height: 360px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-.header .avator {
-  float: right;
-  width: 40%;
-  height: 360px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-}
 
-.header .avator .el-avatar {
-  margin-right: 128px;
-  border: 10px solid #ccc;
-  box-shadow: var(--el-box-shadow);
-}
-
-.header .nav p section {
-  font-size: 68px;
-  color: #3fc7f5;
-}
-.header .my-photo {
-  width: 40%;
-  height: 360px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
 .navigator {
   width: 300px;
   height: 700px;
@@ -154,6 +169,13 @@ const onNavTypeSelected = (type: string) => {
   flex-direction: column;
   align-items: center;
   opacity: 0.96;
+  .nav {
+    width: 96%;
+    height: 96%;
+    margin-top: 16px;
+    background: none;
+    border: 0;
+  }
 }
 .personal-content {
   width: 380px;
@@ -163,20 +185,13 @@ const onNavTypeSelected = (type: string) => {
   flex-direction: column;
   align-items: center;
   opacity: 0.94;
+  .content {
+    width: 96%;
+    height: 96%;
+    margin-top: 16px;
+  }
 }
 
-.personal-content .content {
-  width: 96%;
-  height: 96%;
-  margin-top: 16px;
-}
-.navigator .nav {
-  width: 96%;
-  height: 96%;
-  margin-top: 16px;
-  background: none;
-  border: 0;
-}
 .articles {
   height: 1800px;
   opacity: 0.9;
