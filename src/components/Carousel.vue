@@ -3,7 +3,7 @@
     <el-image
       v-for="item in photos"
       :key="item"
-      style="width: 18%;margin-left: 35px;margin-bottom:30px"
+      style="width: 18%; margin-left: 35px; margin-bottom: 30px"
       :src="item"
       class="image"
     />
@@ -26,6 +26,6 @@ const photos = [
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
 }
 </style>

@@ -1,25 +1,44 @@
 <template>
   <div class="header">
     <div class="nav">
-      <p style="width:60%;height:100px;font-size:60px;color: #ccc"><span style="font-size:65px;color:#3fc7f5">Menchow</span> GAN</p>
-      <div style="height: 150px;"></div>
+      <p style="width: 60%; height: 100px; font-size: 70px; color: #ccc">
+        <span style="font-size: 80px; color: #3fc7f5">Menchow</span> GAN
+      </p>
+      <div style="height: 150px"></div>
+    </div>
+    <div class="avator">
+      <el-avatar :size="180" :src="circleUrl" />
     </div>
   </div>
-  <div class="body">
-    <div class="articles" style="width: 60%">
+  <div class="body" style="margin-bottom: 200px">
+    <div class="articles" style="flex: 3; overflow: auto">
       <ArticleCard :articleSimpleInfos="articleSimpleInfos" />
     </div>
-    <nav class="navigator" style="width: 18%">
-      <el-card class="nav" shadow="hover">
-        <Search style="width: 100%;opacity: 0.6" @type-inputed="onTypeChanged" />
-        <el-divider />
-        <CollapseSelector style="width: 100%" @type-changed="onTypeChanged" />
-      </el-card>
-    </nav>
-    <nav class="personal-content" style="width: 22%">
-      <p style="width:40%;height:100px;font-size:50px;color: #ccc"><span style="font-size:55px;color:#3fc7f5">MY</span>-Photos</p>
-      <Carousel style="width: 100%;margin-top: 50px" />
-    </nav>
+    <div
+      style="
+        min-width: 350px;
+        flex: 2;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+      "
+    >
+      <nav class="navigator" style="flex: 1">
+        <el-card class="nav" shadow="hover">
+          <Search
+            style="width: 100%; opacity: 0.6"
+            @type-inputed="onTypeChanged"
+          />
+          <CollapseSelector style="width: 100%" @type-changed="onTypeChanged" />
+        </el-card>
+      </nav>
+      <nav class="personal-content" style="flex: 1">
+        <p style="width: 40%; height: 100px; font-size: 50px; color: #ccc">
+          <span style="font-size: 55px; color: #3fc7f5">MY</span>-Photos
+        </p>
+        <Carousel style="width: 100%; margin-top: 50px" />
+      </nav>
+    </div>
   </div>
 </template>
 
@@ -32,6 +51,9 @@ import { ref } from "@vue/reactivity";
 import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
 
 const currentDate = ref<Date>(new Date());
+
+const circleUrl =
+  "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
 
 const articleSimpleInfos: Array<ArticleSimpleInfoModel> = [
   {
@@ -69,13 +91,47 @@ const articleSimpleInfos: Array<ArticleSimpleInfoModel> = [
     title: "Yummy hamburger3",
     content: currentDate.value,
   },
+  {
+    id: 3,
+    imgUrl:
+      "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
+    title: "Yummy hamburger3",
+    content: currentDate.value,
+  },
+  {
+    id: 3,
+    imgUrl:
+      "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
+    title: "Yummy hamburger3",
+    content: currentDate.value,
+  },
+  {
+    id: 3,
+    imgUrl:
+      "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
+    title: "Yummy hamburger3",
+    content: currentDate.value,
+  },
+  {
+    id: 3,
+    imgUrl:
+      "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
+    title: "Yummy hamburger3",
+    content: currentDate.value,
+  },
+  {
+    id: 3,
+    imgUrl:
+      "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
+    title: "Yummy hamburger3",
+    content: currentDate.value,
+  },
 ];
-
-const typeSelected = ref<string>("");
 
 const onTypeChanged = (type: string) => {
   console.log("new type selected", type);
-  typeSelected.value = type;
+  // if (type) {
+  // }
 };
 </script>
 
@@ -88,17 +144,42 @@ const onTypeChanged = (type: string) => {
   align-items: flex-start;
   opacity: 0.8;
 }
-.header .nav{
+@media (max-width: 1500px) {
+  .body {
+    width: 80%;
+    display: flex;
+    flex-direction: columns;
+    align-items: flex-start;
+    opacity: 0.8;
+  }
+}
+.header .nav {
   width: 60%;
   height: 360px;
   display: flex;
   flex-direction: column;
 }
-.header .nav p section{
+.header .avator {
+  float: right;
+  width: 40%;
+  height: 360px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header .avator .el-avatar {
+  margin-right: 128px;
+  border: 10px solid #ccc;
+  box-shadow: var(--el-box-shadow);
+}
+
+.header .nav p section {
   font-size: 68px;
   color: #3fc7f5;
 }
-.header .my-photo{
+.header .my-photo {
   width: 40%;
   height: 360px;
   display: flex;
@@ -133,10 +214,11 @@ const onTypeChanged = (type: string) => {
   height: 96%;
   margin-top: 16px;
   background: none;
-  border: 0
+  border: 0;
 }
 .articles {
-  height: 1000px;
-  opacity: 0.93;
+  height: 1800px;
+  opacity: 0.9;
+  min-width: fit-content;
 }
 </style>

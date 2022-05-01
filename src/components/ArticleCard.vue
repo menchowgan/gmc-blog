@@ -36,13 +36,13 @@ defineProps({
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .article-card .card {
   width: 100%;
   height: 360px;
-  margin-top: 16px;
+  margin-top: 20px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -59,7 +59,7 @@ defineProps({
 }
 .article-card .card .content .image {
   display: block;
-  width: 28%;
+  height: 86%;
   margin-top: 30px; 
   border-radius: 16px;
 }
