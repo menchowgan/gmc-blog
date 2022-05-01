@@ -9,6 +9,8 @@ body {
   padding: 0;
   margin: 0;
   border: 0;
+  background-image: url("./assets/images/background.webp");
+  background-attachment: fixed;
 }
 
 .content-container {
@@ -18,8 +20,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url("./assets/images/background.webp");
-  background-attachment: fixed;
 }
 
 #app {
