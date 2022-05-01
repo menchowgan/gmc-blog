@@ -28,4 +28,23 @@ const photos = [
   justify-content: flex-start;
   flex-wrap: wrap;
 }
+
+.images .el-image{
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+.images .el-image:hover{
+  animation: bounce 0.5s;
+  transform: scale(1.5);
+}
+
+@keyframes bounce{
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.5);
+  }
+}
 </style>

@@ -8,10 +8,10 @@
       :key="item.id"
     >
       <div class="content">
-        <img :src="item.imgUrl" class="image" />
+        <el-image fit="cover" :src="item.imgUrl" class="image" />
         <div class="section">
           <span class="title">{{ item.title }}</span>
-          <p>{{ item.content }}</p>
+          <p style="text-align:left">{{ item.content }}</p>
           <el-button type="text" class="button">MORE</el-button>
         </div>
       </div>
@@ -58,6 +58,7 @@ defineProps({
   align-items: flex-start;
 }
 .article-card .card .content .image {
+  min-width:24%;
   display: block;
   height: 86%;
   margin-top: 30px; 

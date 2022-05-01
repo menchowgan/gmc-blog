@@ -2,7 +2,7 @@ interface ArticleSimpleInfoModel {
   id?: number
   imgUrl?: string
   title?: string
-  content?: Date
+  content?: Date | string
 }
 
 export {
