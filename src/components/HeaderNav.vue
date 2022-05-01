@@ -33,7 +33,6 @@ const types = [
 ];
 
 const selectedType = (type: string) => {
-  console.log("type header", type);
   emits("type-selected", type);
 };
 </script>
@@ -47,13 +46,13 @@ const selectedType = (type: string) => {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  z-index: 0;
   p {
     height: 100%;
     flex: 1;
     color: #3fc7f5;
     font-size: 24px;
     background-color: #6e6e6e;
-    opacity: 1 !important;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
