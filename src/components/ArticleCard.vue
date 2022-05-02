@@ -4,7 +4,7 @@
       shadow="hover"
       class="card"
       :body-style="{ height: '96%', width: '100%' }"
-      v-for="item in articleSimpleInfos"
+      v-for="item in (articleSimpleInfos as ArticleSimpleInfoModel[])"
       :key="item.id"
     >
       <div class="content">
@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
+import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
 
 defineProps({
   articleSimpleInfos: {
@@ -31,6 +32,7 @@ defineProps({
 </script>
 
 <style scoped lang="scss">
+@import "../style/theme.scss";
 .article-card {
   width: 100%;
   display: flex;
@@ -40,10 +42,14 @@ defineProps({
     width: 100%;
     height: 360px;
     margin-top: 20px;
+    border-radius: 20px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    &:hover{
+      cursor: pointer;
+    }
     .content {
       width: 100%;
       height: 96%;
@@ -67,6 +73,9 @@ defineProps({
       }
       .title {
         font-size: 30px;
+        &:hover{
+          @include hover-style;
+        }
       }
       .button {
         padding: 0;

@@ -41,16 +41,17 @@ body {
   a {
     font-weight: bold;
     color: #2c3e50;
+    &.router-link-exact-active {
+      color: #42b983;
+    }
   }
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
+.fade-enter-active {
+  &,
+  .fade-leave-active {
+    transition: opacity 0.2s ease;
+  }
 }
 
 .fade-enter-from,

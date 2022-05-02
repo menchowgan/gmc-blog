@@ -1,22 +1,28 @@
 <template>
   <div class="creation-cmp flex column">
+    <el-icon class="back-icon" @click="onBack"><arrow-left-bold /></el-icon>
     <div class="header flex column">
       <el-avatar :size="150" :src="circleUrl" />
-      <p class="art-title" style="height: 30px; font-size: 32px; color: #ccc">
-        <span style="font-size: 40px; color: #3fc7f5">Menchow</span> GAN
-      </p>
+      <ArtText
+        :height="30"
+        :font-size="32"
+        :art-font-size="40"
+        :text="nickname"
+      />
     </div>
     <div class="body flex row">
       <nav class="flex column">
         <CollapseSelector
           style="width: 100%"
           title="Creation"
+          :defaultCur="cur"
           :options="options"
           @type-changed="onTypeChanged"
         />
       </nav>
-      <div class="container flex column">
-        
+      <div class="container flex column" >
+        <PersonnalInfo v-show="typeSelected === 'PERSONNAL_INFO_VIEW'" style="opacity: 0.8" />
+        <PersonnalInfoEdit v-show="typeSelected === 'PERSONNAL_INFO_EDIT'" style="opacity: 0.8"/>
       </div>
     </div>
   </div>
@@ -24,13 +30,38 @@
 
 <script setup lang="ts">
 import CollapseSelector from "@/components/CollapseSelector.vue";
+import PersonnalInfo from "@/components/PersonnalInfo.vue";
+import ArtText from "@/components/ArtText.vue";
+import PersonnalInfoEdit from "@/components/PersonnalInfoEdit.vue";
+import { ref } from "@vue/reactivity";
+import { useRoute, useRouter } from "vue-router";
+
+const nickname = ref<string>("Menchow GAN")
+const router = useRouter()
+const route = useRoute()
+
+const typeSelected = ref<string>("")
+
+const cur = ref<number>(-1)
+
+if(route.query && route.query.type){
+  console.log("------", route.query.type)
+  typeSelected.value = route.query.type
+  if(typeSelected.value === "PERSONNAL_INFO_VIEW"){
+    cur.value = 0
+  }
+}
 
 const onTypeChanged = (type: string) => {
   console.log("new type selected", type);
   if (type) {
-    // TODO
+    typeSelected.value = type
   }
 };
+
+const onBack = () => {
+  router.go(-1)
+}
 
 const circleUrl =
   "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
@@ -66,19 +97,34 @@ const options = [
   },
   {
     title: "主题设置 Theme",
-    opts: [
-      { label: "编辑 Upload", value: "THEME_EDIT" }
-    ],
+    opts: [{ label: "编辑 Upload", value: "THEME_EDIT" }],
   },
 ];
 </script>
 
 <style scoped lang="scss">
-@import url("../../style/flex-style.scss");
+@import "../../style/flex-style.scss";
+@import "../../style/theme.scss";
 .creation-cmp {
   width: 100%;
   justify-content: center;
   align-items: center;
+  .back-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    border: 2px solid $theme-color;
+    color: $theme-color;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    box-shadow: var(--el-box-shadow);
+    &:hover{
+      border: 2px solid #ccc;
+      color: #ccc;
+      cursor: pointer;
+    }
+  }
   .header {
     width: 80%;
     height: 350px;
@@ -87,11 +133,6 @@ const options = [
     .el-avatar {
       border: 10px solid #ccc;
       box-shadow: var(--el-box-shadow);
-    }
-    .art-title{
-      &:hover {
-        animation: text-scale 0.8s;
-      }
     }
   }
   .body {
@@ -108,14 +149,15 @@ const options = [
       margin-bottom: 100px;
       justify-content: flex-start;
       align-items: center;
-      background-color: #ccc;
+      // background-color: #ccc;
       border-radius: 10px;
       box-shadow: var(--el-box-shadow-dark);
+      background-image: url("../../assets/images/creaton_background.webp");
     }
   }
 }
 
-@keyframes text-scale{
+@keyframes text-scale {
   0% {
     transform: scale(1);
   }

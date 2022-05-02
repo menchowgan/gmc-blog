@@ -3,9 +3,7 @@
     <el-image
       v-for="item in photos"
       :key="item"
-      style="width: 18%; margin-left: 35px; margin-bottom: 30px"
       :src="item"
-      class="image"
     />
   </div>
 </template>
@@ -20,26 +18,28 @@ const photos = [
 ];
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .images {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap;
+  .el-image {
+    width: 18%; 
+    margin-left: 35px; 
+    margin-bottom: 30px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    &:hover {
+      animation: bounce 0.5s;
+      transform: scale(1.5);
+      cursor: pointer;
+    }
+  }
 }
 
-.images .el-image{
-  border-radius: 10px;
-  border: 1px solid #eee;
-}
-
-.images .el-image:hover{
-  animation: bounce 0.5s;
-  transform: scale(1.5);
-}
-
-@keyframes bounce{
+@keyframes bounce {
   0% {
     transform: scale(1);
   }

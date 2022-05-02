@@ -2,26 +2,21 @@
   <div class="Home flex column">
     <div class="header">
       <div class="nav">
-        <p
-          class="art-title"
-          style="width: 60%; height: 100px; font-size: 70px; color: #ccc"
-        >
-          <span style="font-size: 80px; color: #3fc7f5">Menchow</span> GAN
-        </p>
+        <ArtText :text="nickname" />
         <div style="width: 100%; height: 100px">
           <HeaderNav @type-selected="onNavTypeSelected" />
         </div>
       </div>
       <div class="avator">
-        <el-avatar :size="180" :src="circleUrl" />
+        <el-avatar @click="toCreate" :size="180" :src="circleUrl" />
       </div>
     </div>
-    <div class="body" style="margin-bottom: 200px">
-      <div class="articles" style="flex: 3; overflow: auto">
+    <div class="body">
+      <div class="articles flex column">
         <ArticleCard :articleSimpleInfos="articleSimpleInfos" />
       </div>
       <div class="sider">
-        <nav class="navigator" style="flex: 1">
+        <nav class="navigator">
           <el-card class="nav" shadow="hover">
             <Search
               style="width: 100%; opacity: 0.6"
@@ -35,12 +30,15 @@
           </el-card>
         </nav>
         <nav class="personal-content" style="flex: 1">
-          <p
-            class="art-title"
-            style="width: 40%; height: 100px; font-size: 50px; color: #ccc"
-          >
-            <span style="font-size: 55px; color: #3fc7f5">MY</span>-Photos
-          </p>
+          <ArtText
+            :width="40"
+            :height="100"
+            :fontSize="50"
+            :artFontSize="55"
+            artColor="#3fc7f5"
+            color="#ccc"
+            text="MY -Photo"
+          />
           <Carousel style="width: 100%; margin-top: 50px" />
         </nav>
       </div>
@@ -54,6 +52,7 @@ import Search from "@/components/Search.vue";
 import CollapseSelector from "@/components/CollapseSelector.vue";
 import Carousel from "@/components/Carousel.vue";
 import HeaderNav from "@/components/HeaderNav.vue";
+import ArtText from "@/components/ArtText.vue";
 import { ref } from "@vue/reactivity";
 import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
@@ -61,6 +60,8 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const currentDate = ref<Date>(new Date());
+
+const nickname = ref<string>("Menchow GAN")
 
 const options = [
   {
@@ -179,10 +180,22 @@ const onNavTypeSelected = (type: string) => {
     },
   });
 };
+
+const toCreate = () => {
+  router.push({
+    name: "Creation",
+    query: {
+      type: "PERSONNAL_INFO_VIEW",
+      userId: "menchowgan",
+    },
+  })
+}
 </script>
 
 <style scoped lang="scss">
-@import url("../style/flex-style.scss");
+@import "../style/flex-style.scss";
+@import "../style/theme.scss";
+
 .Home {
   width: 100%;
   align-items: center;
@@ -192,6 +205,7 @@ const onNavTypeSelected = (type: string) => {
     flex-direction: row;
     align-items: flex-start;
     opacity: 0.8;
+    margin-bottom: 200px;
     .sider {
       min-width: 350px;
       flex: 2;
@@ -224,7 +238,7 @@ const onNavTypeSelected = (type: string) => {
       .art-title {
         section {
           font-size: 68px;
-          color: #3fc7f5;
+          color: $theme-color;
         }
         &:hover {
           animation: text-scale 0.8s;
@@ -243,6 +257,7 @@ const onNavTypeSelected = (type: string) => {
         margin-right: 128px;
         border: 10px solid #ccc;
         box-shadow: var(--el-box-shadow);
+        cursor: pointer;
       }
     }
     .my-photo {
@@ -255,7 +270,7 @@ const onNavTypeSelected = (type: string) => {
   }
 
   .navigator {
-    width: 300px;
+    flex: 1;
     height: 700px;
     display: flex;
     flex-direction: column;
@@ -293,6 +308,10 @@ const onNavTypeSelected = (type: string) => {
     height: 2000px;
     opacity: 0.9;
     min-width: 500px;
+    flex: 3; 
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow: auto;
   }
 }
 
@@ -300,7 +319,7 @@ const onNavTypeSelected = (type: string) => {
   0% {
     transform: scale(1);
   }
-  0% {
+  50% {
     transform: scale(1.25);
   }
   100% {
