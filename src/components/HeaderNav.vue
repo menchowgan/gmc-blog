@@ -38,7 +38,8 @@ const selectedType = (type: string) => {
 </script>
 
 <style scoped lang="scss">
-@import url("../style/animation.scss");
+@import "../style/animation.scss";
+@import "../style/theme.scss";
 
 .header-nav {
   width: 100%;
@@ -50,19 +51,20 @@ const selectedType = (type: string) => {
   p {
     height: 100%;
     flex: 1;
-    color: #3fc7f5;
+    color: $theme-color;
     font-size: 24px;
     background-color: #6e6e6e;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     &:hover {
-      background-color: #3fc7f5;
+      background-color: $theme-color;
       color: #6e6e6e;
       animation: bounce 0.5s;
       border: 5px solid #6e6e6e;
       border-radius: 32px;
       transform: rotateZ(-10deg) scale(1.2);
+      cursor: pointer;
     }
     span {
       line-height: 90px;
