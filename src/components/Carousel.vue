@@ -1,14 +1,23 @@
 <template>
   <div class="images">
     <el-image
-      v-for="item in photos"
+      v-for="(item, index) in photos"
       :key="item"
       :src="item"
+      @click="() => toPhotos({url: item, index})"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import { PhotoModel } from "../utils/interfaces/index"
+
+const emits = defineEmits(['toPhotos'])
+
+const toPhotos = (photo: PhotoModel) => {
+  emits("toPhotos", photo)
+}
+
 const photos = [
   "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.momi8.com%2Fimages%2Fblog_images%2F201207%2Fwww.momi8.com_201207141731411081004.jpg&refer=http%3A%2F%2Fwww.momi8.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653923499&t=c6dba16b27ed994fc5250cbf62ec6417",
   "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimages.cnblogs.com%2Fcnblogs_com%2Fchenpi%2F809071%2Fo_bg.jpg&refer=http%3A%2F%2Fimages.cnblogs.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653923499&t=7cec63749b30c1e95f355c1257d7551a",

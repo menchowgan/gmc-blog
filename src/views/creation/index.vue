@@ -20,9 +20,19 @@
           @type-changed="onTypeChanged"
         />
       </nav>
-      <div class="container flex column" >
-        <PersonnalInfo v-show="typeSelected === 'PERSONNAL_INFO_VIEW'" style="opacity: 0.8" />
-        <PersonnalInfoEdit v-show="typeSelected === 'PERSONNAL_INFO_EDIT'" style="opacity: 0.8"/>
+      <div class="container flex column">
+        <PersonnalInfo
+          v-show="typeSelected === 'PERSONNAL_INFO_VIEW'"
+          style="opacity: 0.8"
+        />
+        <PersonnalInfoEdit
+          v-show="typeSelected === 'PERSONNAL_INFO_EDIT'"
+          style="opacity: 0.8"
+        />
+        <PhotoUpload
+          v-show="['PHOTO_UPLOAD', 'PHOTO_VIEW'].includes(typeSelected)"
+          style="opacity: 0.8"
+        />
       </div>
     </div>
   </div>
@@ -33,35 +43,50 @@ import CollapseSelector from "@/components/CollapseSelector.vue";
 import PersonnalInfo from "@/components/PersonnalInfo.vue";
 import ArtText from "@/components/ArtText.vue";
 import PersonnalInfoEdit from "@/components/PersonnalInfoEdit.vue";
+import PhotoUpload from "@/components/PhotoUpload.vue";
 import { ref } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
 
-const nickname = ref<string>("Menchow GAN")
-const router = useRouter()
-const route = useRoute()
+const nickname = ref<string>("Menchow GAN");
+const router = useRouter();
+const route = useRoute();
 
-const typeSelected = ref<string>("")
+const typeSelected = ref<string>("");
 
-const cur = ref<number>(-1)
+const cur = ref<number>(-1);
 
-if(route.query && route.query.type){
-  console.log("------", route.query.type)
-  typeSelected.value = route.query.type
-  if(typeSelected.value === "PERSONNAL_INFO_VIEW"){
-    cur.value = 0
+if (route.query && route.query.type) {
+  console.log("------", route.query.type);
+  typeSelected.value = route.query.type;
+  switch (typeSelected.value) {
+    case "PERSONNAL_INFO_VIEW":
+      cur.value = 0;
+      break;
+    case "TEC_BLOG":
+      case "DAILY_LIFE":
+        case "HOBBY_SHARE":
+          cur.value = 1;
+      break;
+    case "PHOTOS_VIEW":
+      typeSelected.value = "PHOTO_VIEW";
+      cur.value = 2;
+      break;
+    case "MUSIC_ABOUT":
+      cur.value = 3;
+      break;
   }
 }
 
 const onTypeChanged = (type: string) => {
   console.log("new type selected", type);
   if (type) {
-    typeSelected.value = type
+    typeSelected.value = type;
   }
 };
 
 const onBack = () => {
-  router.go(-1)
-}
+  router.go(-1);
+};
 
 const circleUrl =
   "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
@@ -119,7 +144,7 @@ const options = [
     top: 30px;
     left: 30px;
     box-shadow: var(--el-box-shadow);
-    &:hover{
+    &:hover {
       border: 2px solid #ccc;
       color: #ccc;
       cursor: pointer;

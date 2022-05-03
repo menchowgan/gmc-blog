@@ -39,7 +39,7 @@
             color="#ccc"
             text="MY -Photo"
           />
-          <Carousel style="width: 100%; margin-top: 50px" />
+          <Carousel @toPhotos="toPhotos" style="width: 100%; margin-top: 50px" />
         </nav>
       </div>
     </div>
@@ -77,6 +77,13 @@ const options = [
       { label: "技术博客 Tec", value: "TEC_BLOG" },
       { label: "工作计划 Plan", value: "JOB_PLAN" },
     ],
+  },
+  {
+    title: "娱乐 Recreation",
+    opts: [
+      { label: "音乐分享 Music Sharing", value: "MUSIC_SHARE" },
+      { label: "游戏趣谈 Game Gossip", value: "GAME_GOSSIP" },
+    ]
   },
 ];
 
@@ -186,6 +193,17 @@ const toCreate = () => {
     name: "Creation",
     query: {
       type: "PERSONNAL_INFO_VIEW",
+      userId: "menchowgan",
+    },
+  })
+}
+
+const toPhotos = (photo) => {
+  router.push({
+    name: "Creation",
+    query: {
+      type: "PHOTOS_VIEW",
+      index: photo.index,
       userId: "menchowgan",
     },
   })

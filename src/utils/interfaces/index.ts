@@ -16,8 +16,13 @@ interface UserModel {
   avatar?: string
   photos?: Array<string>
 }
+interface PhotoModel {
+  index: number
+  url: string
+}
 
 export {
   ArticleSimpleInfoModel,
-  UserModel
+  UserModel,
+  PhotoModel
 }
