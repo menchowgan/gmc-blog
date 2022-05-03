@@ -13,16 +13,15 @@
           <p class="type-title">
             {{ item.title }}
           </p>
-          <p v-for="opt in item.opts" :key="opt.value">
-            <transition name="fade" mode="out-in">
-              <span
-                class="link"
-                v-if="curParent === index"
-                @click="() => onTypeChanged(opt.value)"
-                >{{ opt.label }}</span
-              >
-            </transition>
-          </p>
+          <transition-group name="fade" mode="out-in">
+            <template v-if="curParent === index">
+              <p v-for="opt in item.opts" :key="opt.value">
+                <span class="link" @click="() => onTypeChanged(opt.value)">{{
+                  opt.label
+                }}</span>
+              </p>
+            </template>
+          </transition-group>
         </div>
       </section>
     </el-col>
