@@ -3,6 +3,8 @@ interface ArticleSimpleInfoModel {
   imgUrl?: string
   title?: string
   content?: Date | string
+  date?: Date,
+  type?: string 
 }
 
 interface UserModel {
@@ -14,10 +16,12 @@ interface UserModel {
   evaluate?: number
   brief?: string
   avatar?: string
-  photos?: Array<string>
+  photos?: Array<PhotoModel>,
+  articleSimplaeInfos?: Array<ArticleSimpleInfoModel>
 }
+
 interface PhotoModel {
-  index: number
+  id: number
   url: string
 }
 

@@ -20,7 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
 
 defineProps({
@@ -59,7 +58,7 @@ defineProps({
       align-items: flex-start;
       p {
         height: 80%;
-        font-size: 20px;
+        font-size: 24px;
         color: #999;
         margin-top: 13px;
         margin-left: 13px;

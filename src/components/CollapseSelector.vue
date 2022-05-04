@@ -6,7 +6,7 @@
       </h1>
       <section style="color: #3fc7f5">
         <div
-          v-for="(item, index) in options"
+          v-for="(item, index) in (options as OptionsModel)"
           :key="item.title"
           @click="() => onSelected(index)"
         >
@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { ref } from "@vue/reactivity";
-import { defineEmits, defineProps, onMounted } from "@vue/runtime-core";
+import { defineEmits, watchEffect } from "@vue/runtime-core";
 const emits = defineEmits(["typeChanged"]);
 
 type OptionsModel = Array<{
@@ -52,9 +52,11 @@ const props = defineProps({
 
 const curParent = ref(-1);
 
-if (props.defaultCur === 0 || props.defaultCur) {
-  curParent.value = props.defaultCur;
-}
+watchEffect(() => {
+  if (props.defaultCur === 0 || props.defaultCur) {
+    curParent.value = props.defaultCur;
+  }
+});
 
 const onTypeChanged = (newVal: string) => {
   emits("typeChanged", newVal);
