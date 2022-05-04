@@ -7,7 +7,6 @@
 
 <script setup lang="ts">
 import { computed } from "@vue/runtime-core";
-import { defineProps } from "vue";
 
 interface ArtStyleModel {
   fontSize?: number;

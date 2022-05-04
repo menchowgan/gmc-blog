@@ -57,21 +57,13 @@ import ArtText from "@/components/ArtText.vue";
 import { ref } from "@vue/reactivity";
 import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
-import { getCurrentInstance } from "vue";
-
-const { axios } = getCurrentInstance()?.appContext?.config?.globalProperties as any;
+import {request} from "../utils/http/index"
 
 const user = ref<UserModel>({});
 
 const init = async () => {
-  const res = await axios({
-    url: "/get-user-info",
-    method: "get",
-    headers: {
-      name: "menchowgan",
-    },
-  });
-  user.value = res.data.userInfo;
+  const res = await request("get-user-simple-info", null);
+  user.value = (res as any).data.userInfo;
 };
 
 init();

@@ -20,7 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
 
 defineProps({

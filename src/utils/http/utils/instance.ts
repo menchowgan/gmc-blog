@@ -1,14 +1,16 @@
 import axios from "axios"
 import { App } from "vue";
 
-export default {
+const instance = axios.create({
+  timeout: 1000
+})
+
+const Axios = {
   install(app: App) {
     const appProps = app.config.globalProperties
-    const instance = axios.create({
-      timeout: 1000
-    })
     instance.interceptors.request.use(function (config) {
       // Do something before request is sent
+      console.log("request", config);
       return config;
     }, function (error) {
       // Do something with request error
@@ -26,3 +28,8 @@ export default {
     appProps.axios = instance;
   }
 }
+
+export {
+  instance,
+  Axios
+};
