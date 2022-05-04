@@ -11,7 +11,7 @@
           :key="tag"
           size="large"
           class="mx-1"
-          :type="tagTypes[index % tagTypes.length]"
+          :type="(tagTypes[index % tagTypes.length] as any)"
         >
           {{ tag }}
         </el-tag>
@@ -29,7 +29,7 @@ import { reactive, readonly, ref } from "@vue/reactivity";
 import { computed } from "@vue/runtime-core";
 import { UserModel } from "../utils/interfaces/index";
 
-const tagTypes = readonly(["success", "info", "warning", "danger"]);
+const tagTypes = ["success", "info", "warning", "danger"];
 
 const fans = computed(() => {
   return user.fans ? user.fans : 0;
@@ -53,7 +53,7 @@ const user = reactive<UserModel>({
 @import "../style/theme.scss";
 .personnal-info-container {
   width: 99%;
-  margin-top: 5px;
+  margin-top: 15px;
   justify-content: flex-start;
   align-items: flex-start;
   background-color: $view-color;
@@ -62,6 +62,7 @@ const user = reactive<UserModel>({
   .el-avatar {
     width: 20%;
     margin: 10px;
+    margin-top: 20px;
     border-radius: 10px;
     border: 5px solid #ccc;
   }

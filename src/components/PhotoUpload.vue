@@ -1,9 +1,11 @@
 <template>
-  <div class="photo-upload flex row">
+  <div class="photo-upload flex column">
+    <p> Photos -- {{ title }} </p>
     <el-upload
       class="el-upload flex row"
       action="https://jsonplaceholder.typicode.com/posts/"
       list-type="picture-card"
+      :disabled="cannotUpload"
       :on-preview="handlePictureCardPreview"
       :on-remove="handleRemove"
       :file-list="fileList"
@@ -21,6 +23,17 @@
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import type { UploadProps, UploadUserFile } from 'element-plus'
+
+defineProps({
+  cannotUpload: {
+    type: Boolean,
+    default: false
+  },
+  title: {
+    type: String,
+    default: "view"
+  }
+})
 
 const fileList = ref<UploadUserFile[]>([])
 
@@ -48,11 +61,16 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   margin-top: 5px;
   justify-content: flex-start;
   align-items: flex-start;
-  background-color: white;
   border-radius: 10px;
   box-shadow: var(--el-box-shadow);
+  p{
+    margin-left: 20px;
+    font-size: 30px;
+    color: $theme-color;
+  }
   .el-upload{
     flex: 1;
+    width: 96%;
     margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;

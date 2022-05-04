@@ -2,26 +2,23 @@
   <div class="Home flex column">
     <div class="header">
       <div class="nav">
-        <ArtText :text="nickname" />
+        <ArtText :text="user.nickname" />
         <div style="width: 100%; height: 100px">
           <HeaderNav @type-selected="onNavTypeSelected" />
         </div>
       </div>
       <div class="avator">
-        <el-avatar @click="toCreate" :size="180" :src="circleUrl" />
+        <el-avatar @click="toCreate" :size="180" :src="user.avatar" />
       </div>
     </div>
     <div class="body">
       <div class="articles flex column">
-        <ArticleCard :articleSimpleInfos="articleSimpleInfos" />
+        <ArticleCard :articleSimpleInfos="user.articleSimplaeInfos" />
       </div>
       <div class="sider">
         <nav class="navigator">
           <el-card class="nav" shadow="hover">
-            <Search
-              style="width: 100%; opacity: 0.6"
-              @type-inputed="onTypeChanged"
-            />
+            <Search style="width: 100%; opacity: 0.6" @type-inputed="onTypeChanged" />
             <CollapseSelector
               style="width: 100%"
               :options="options"
@@ -39,7 +36,11 @@
             color="#ccc"
             text="MY -Photo"
           />
-          <Carousel @toPhotos="toPhotos" style="width: 100%; margin-top: 50px" />
+          <Carousel
+            :photos="user.photos"
+            @toPhotos="toPhotos"
+            style="width: 100%; margin-top: 50px"
+          />
         </nav>
       </div>
     </div>
@@ -54,14 +55,30 @@ import Carousel from "@/components/Carousel.vue";
 import HeaderNav from "@/components/HeaderNav.vue";
 import ArtText from "@/components/ArtText.vue";
 import { ref } from "@vue/reactivity";
-import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
+import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
+import { getCurrentInstance } from "vue";
+
+const { axios } = getCurrentInstance()?.appContext?.config?.globalProperties as any;
+
+const user = ref<UserModel>({});
+
+const init = async () => {
+  const res = await axios({
+    url: "/get-user-info",
+    method: "get",
+    headers: {
+      name: "menchowgan",
+    },
+  });
+  user.value = res.data.userInfo;
+};
+
+init();
 
 const router = useRouter();
 
 const currentDate = ref<Date>(new Date());
-
-const nickname = ref<string>("Menchow GAN")
 
 const options = [
   {
@@ -83,90 +100,7 @@ const options = [
     opts: [
       { label: "音乐分享 Music Sharing", value: "MUSIC_SHARE" },
       { label: "游戏趣谈 Game Gossip", value: "GAME_GOSSIP" },
-    ]
-  },
-];
-
-const circleUrl =
-  "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
-
-const articleSimpleInfos: Array<ArticleSimpleInfoModel> = [
-  {
-    id: 1,
-    imgUrl:
-      "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
-    title: "Yummy hamburger1",
-    content: currentDate.value,
-  },
-  {
-    id: 2,
-    imgUrl:
-      "https://img0.baidu.com/it/u=403007778,499203326&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
-    title: "最唯美的散文精选篇一：人生路上，蝶梦飞飞",
-    content:
-      "人生如一路风景线，风景有你的看，也有风景在对你看。一晃几十年，常常叹!岁月的车厢，装的全是别人的颜。烟雨云散，只有自己的遗憾在叹。当我们在感叹时，抱怨、抱怨。抱怨，机遇全是别人的缘;人生如一路风景线，风景有你的看，也有风景在对你看。一晃几十年，常常叹!岁月的车厢，装的全是别人的颜。烟雨云散，只有自己的遗憾在叹。",
-  },
-  {
-    id: 3,
-    imgUrl:
-      "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg3.doubanio.com%2Fview%2Fnote%2Fl%2Fpublic%2Fp55297062.jpg&refer=http%3A%2F%2Fimg3.doubanio.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653965733&t=1292d860c795eaa03b05c8ceafbd1c36",
-    title: "人生如蝶。花盛开，便认真去爱惜",
-    content:
-      "千万不要否认大家曾经拥有的情感，只需记牢难忘的回忆就行，那样才不容易感觉自身以前投入的情感不值。浮沉流年，空落了是多少幽怨爱恨。循环变化，寻看不到曾有的沧海桑田，沐人间烟火，又怎么会不染岁月风尘，虽然踏过的仅仅半生烟火。",
-  },
-  {
-    id: 1,
-    imgUrl:
-      "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
-    title: "Yummy hamburger1",
-    content: currentDate.value,
-  },
-  {
-    id: 2,
-    imgUrl:
-      "https://img0.baidu.com/it/u=403007778,499203326&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
-    title: "最唯美的散文精选篇一：人生路上，蝶梦飞飞",
-    content:
-      "人生如一路风景线，风景有你的看，也有风景在对你看。一晃几十年，常常叹!岁月的车厢，装的全是别人的颜。烟雨云散，只有自己的遗憾在叹。当我们在感叹时，抱怨、抱怨。抱怨，机遇全是别人的缘;人生如一路风景线，风景有你的看，也有风景在对你看。一晃几十年，常常叹!岁月的车厢，装的全是别人的颜。烟雨云散，只有自己的遗憾在叹。",
-  },
-  {
-    id: 3,
-    imgUrl:
-      "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg3.doubanio.com%2Fview%2Fnote%2Fl%2Fpublic%2Fp55297062.jpg&refer=http%3A%2F%2Fimg3.doubanio.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653965733&t=1292d860c795eaa03b05c8ceafbd1c36",
-    title: "人生如蝶。花盛开，便认真去爱惜",
-    content:
-      "千万不要否认大家曾经拥有的情感，只需记牢难忘的回忆就行，那样才不容易感觉自身以前投入的情感不值。浮沉流年，空落了是多少幽怨爱恨。循环变化，寻看不到曾有的沧海桑田，沐人间烟火，又怎么会不染岁月风尘，虽然踏过的仅仅半生烟火。",
-  },
-  {
-    id: 1,
-    imgUrl:
-      "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
-    title: "Yummy hamburger1",
-    content: currentDate.value,
-  },
-  {
-    id: 2,
-    imgUrl:
-      "https://img0.baidu.com/it/u=403007778,499203326&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
-    title: "最唯美的散文精选篇一：人生路上，蝶梦飞飞",
-    content:
-      "人生如一路风景线，风景有你的看，也有风景在对你看。一晃几十年，常常叹!岁月的车厢，装的全是别人的颜。烟雨云散，只有自己的遗憾在叹。当我们在感叹时，抱怨、抱怨。抱怨，机遇全是别人的缘;人生如一路风景线，风景有你的看，也有风景在对你看。一晃几十年，常常叹!岁月的车厢，装的全是别人的颜。烟雨云散，只有自己的遗憾在叹。",
-  },
-  {
-    id: 3,
-    imgUrl:
-      "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg3.doubanio.com%2Fview%2Fnote%2Fl%2Fpublic%2Fp55297062.jpg&refer=http%3A%2F%2Fimg3.doubanio.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653965733&t=1292d860c795eaa03b05c8ceafbd1c36",
-    title: "人生如蝶。花盛开，便认真去爱惜",
-    content:
-      "千万不要否认大家曾经拥有的情感，只需记牢难忘的回忆就行，那样才不容易感觉自身以前投入的情感不值。浮沉流年，空落了是多少幽怨爱恨。循环变化，寻看不到曾有的沧海桑田，沐人间烟火，又怎么会不染岁月风尘，虽然踏过的仅仅半生烟火。",
-  },
-  {
-    id: 2,
-    imgUrl:
-      "https://img0.baidu.com/it/u=403007778,499203326&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
-    title: "最唯美的散文精选篇一：人生路上，蝶梦飞飞",
-    content:
-      "人生如一路风景线，风景有你的看，也有风景在对你看。一晃几十年，常常叹!岁月的车厢，装的全是别人的颜。烟雨云散，只有自己的遗憾在叹。当我们在感叹时，抱怨、抱怨。抱怨，机遇全是别人的缘;人生如一路风景线，风景有你的看，也有风景在对你看。一晃几十年，常常叹!岁月的车厢，装的全是别人的颜。烟雨云散，只有自己的遗憾在叹。",
+    ],
   },
 ];
 
@@ -195,19 +129,19 @@ const toCreate = () => {
       type: "PERSONNAL_INFO_VIEW",
       userId: "menchowgan",
     },
-  })
-}
+  });
+};
 
-const toPhotos = (photo) => {
+const toPhotos = (photo: PhotoModel) => {
   router.push({
     name: "Creation",
     query: {
       type: "PHOTOS_VIEW",
-      index: photo.index,
+      index: photo.id,
       userId: "menchowgan",
     },
-  })
-}
+  });
+};
 </script>
 
 <style scoped lang="scss">
@@ -326,7 +260,7 @@ const toPhotos = (photo) => {
     height: 2000px;
     opacity: 0.9;
     min-width: 500px;
-    flex: 3; 
+    flex: 3;
     justify-content: flex-start;
     align-items: flex-start;
     overflow: auto;

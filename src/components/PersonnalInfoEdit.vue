@@ -86,11 +86,11 @@ const inputVisible = ref(false);
 const imageUrl = ref("");
 
 const handleClose = (tag: string) => {
-  form.hobbies.splice(form.hobbies.indexOf(tag), 1);
+  (form.hobbies as string[] ).splice((form.hobbies as string[]).indexOf(tag), 1);
 };
 const handleInputConfirm = () => {
   if (inputValue.value) {
-    form.hobbies.push(inputValue.value);
+    (form.hobbies as string[]).push(inputValue.value);
   }
   inputVisible.value = false;
   inputValue.value = "";
@@ -143,7 +143,7 @@ const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
     margin-left: 20px;
     margin-right: 20px;
     & >>> .avatar-uploader {
-      & .el-upload {
+      .el-upload {
         border: 1px dashed $theme-color;
         border-radius: 6px;
         cursor: pointer;

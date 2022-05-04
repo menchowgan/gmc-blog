@@ -2,7 +2,9 @@
   <div class="content-container">
     <router-view v-slot="{ Component }">
       <transition name="fade" mode="out-in">
-        <component :is="Component" />
+        <keep-alive :max="4">
+          <component :is="Component" />
+        </keep-alive>
       </transition>
     </router-view>
   </div>
