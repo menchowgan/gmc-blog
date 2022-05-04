@@ -14,6 +14,7 @@ const Axios = {
       return config;
     }, function (error) {
       // Do something with request error
+      appProps.$message.error("网络请求错误，请检查网络");
       return Promise.reject(error);
     });
 

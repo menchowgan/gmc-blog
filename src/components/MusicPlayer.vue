@@ -9,7 +9,11 @@
 
 <script setup lang="ts">
 import { ref } from "@vue/reactivity";
-import { watch } from "@vue/runtime-core";
+import { watch, onMounted } from "@vue/runtime-core";
+
+import { useAudioStore } from "@/store/audio";
+
+const audioStore = useAudioStore()
 
 const paused = ref<boolean>(true);
 
@@ -29,7 +33,7 @@ const props = defineProps({
   musicIdx: Number,
 });
 
-if (Number(player.getAttribute("curidx")) === props.musicIdx) {
+if (audioStore.curidx === props.musicIdx) {
   paused.value = player.paused;
   emits("shouldRotate", {idx: props.musicIdx, pause: paused.value})
 }
@@ -44,22 +48,30 @@ watch(
 const onPlay = () => {
   player.src = props.music;
   if (player.paused) {
-    player.play();
-    paused.value = false;
-    player.setAttribute("curidx", String(props.musicIdx));
-    emits("curMusicStateChanged", {
-      idx: props.musicIdx,
-      paused: paused.value,
-    });
+    try{
+      player.play();
+      paused.value = false;
+      audioStore.curidx = props.musicIdx as number
+      emits("curMusicStateChanged", {
+        idx: props.musicIdx,
+        paused: paused.value,
+      });
+    }catch(e){}
   }
 };
 
 const onPause = () => {
-  player.pause();
-  paused.value = true;
-  player.setAttribute("curidx", String(props.musicIdx));
-  emits("curMusicStateChanged", { idx: props.musicIdx, paused: paused.value });
+  try{
+    player.pause();
+    paused.value = true;
+    audioStore.curidx = props.musicIdx as number
+    emits("curMusicStateChanged", { idx: props.musicIdx, paused: paused.value });
+  }catch(e){}
 };
+
+onMounted(() => {
+  audioStore.$reset()
+})
 
 const reset = () => {
   paused.value = true;
