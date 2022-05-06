@@ -1,15 +1,5 @@
-import { createStore } from 'vuex'
+import { useAudioStore } from './audio';
 
-export default createStore({
-  state: {
-    
-  },
-  mutations: {
-
-  },
-  actions: {
-
-  },
-  modules: {
-  }
-})
+export {
+  useAudioStore
+}

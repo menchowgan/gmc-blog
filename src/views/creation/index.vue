@@ -52,7 +52,7 @@ import MusicView from "@/components/MusicView.vue";
 import { ref } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
 import { ArticleSimpleInfoModel } from "../../utils/interfaces/index";
-import { onActivated } from "vue";
+import { onActivated, onMounted } from "vue";
 
 const nickname = ref<string>("Menchow GAN");
 const router = useRouter();
@@ -62,32 +62,16 @@ const typeSelected = ref<string>("");
 
 const cur = ref<number>(-1);
 
-if (route.query && route.query.type) {
-  console.log("------", route.query.type);
-  typeSelected.value = route.query.type as string;
-  switch (typeSelected.value) {
-    case "PERSONNAL_INFO_VIEW":
-      cur.value = 0;
-      break;
-    case "TEC_BLOG":
-    case "DAILY_LIFE":
-    case "HOBBY_SHARE":
-      typeSelected.value = "ARTICLE_VIEW";
-      cur.value = 1;
-      break;
-    case "PHOTOS_VIEW":
-      typeSelected.value = "PHOTO_VIEW";
-      cur.value = 2;
-      break;
-    case "MUSIC_ABOUT":
-      typeSelected.value = "MUSIC_VIEW";
-      cur.value = 3;
-      break;
-  }
-}
+onMounted(() => {
+  init();
+});
 
 onActivated(() => {
-  console.log("actived")
+  console.log("actived");
+  init();
+});
+
+const init = () => {
   if (route.query && route.query.type) {
     console.log("------", route.query.type);
     typeSelected.value = route.query.type as string;
@@ -111,7 +95,7 @@ onActivated(() => {
         break;
     }
   }
-});
+};
 
 const onTypeChanged = (type: string) => {
   console.log("new type selected", type);
@@ -223,7 +207,7 @@ const options = [
   {
     title: "我的简介 About Me",
     opts: [
-      // { label: "编辑 Edit", value: "PERSONNAL_INFO_EDIT" },
+      { label: "编辑 Edit", value: "PERSONNAL_INFO_EDIT" },
       { label: "查看 View", value: "PERSONNAL_INFO_VIEW" },
     ],
   },
