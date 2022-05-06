@@ -10,17 +10,13 @@
 <script setup lang="ts">
 import { ref } from "@vue/reactivity";
 import { watch, onMounted } from "@vue/runtime-core";
-
-import { useAudioStore } from "@/store/audio";
+import { useAudioStore } from "@/store";
 
 const audioStore = useAudioStore()
 
 const paused = ref<boolean>(true);
 
 const player: HTMLAudioElement = document.getElementById("player") as any;
-
-const startTime = ref<number>(-1);
-const percentage = ref<number>(0);
 
 const emits = defineEmits(["curMusicStateChanged", "shouldRotate"]);
 
@@ -73,11 +69,6 @@ onMounted(() => {
   audioStore.$reset()
 })
 
-const reset = () => {
-  paused.value = true;
-  percentage.value = 0;
-  startTime.value = 0
-};
 </script>
 
 <style lang="scss" scoped>

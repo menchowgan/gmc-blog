@@ -71,6 +71,8 @@ import type { UploadProps } from "element-plus";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 
+import { request } from "../utils/http/index"
+
 const InputRef = ref<InstanceType<typeof ElInput>>();
 
 const form = reactive<UserModel>({
@@ -103,8 +105,14 @@ const showInput = () => {
   });
 };
 
-const onSubmit = () => {
+const onSubmit = async () => {
   console.log("form data", { ...form });
+  try{
+    const res = await request("POST_USER_INFO", {
+      ...form
+    })
+    console.log("user info post", res);
+  }catch(e){}
 };
 
 const handleAvatarSuccess: UploadProps["onSuccess"] = (

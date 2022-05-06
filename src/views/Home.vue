@@ -57,12 +57,12 @@ import ArtText from "@/components/ArtText.vue";
 import { ref } from "@vue/reactivity";
 import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
-import {request} from "../utils/http/index"
+import { request } from "../utils/http/index";
 
 const user = ref<UserModel>({});
 
 const init = async () => {
-  const res = await request("get-user-simple-info", null);
+  const res = await request("GET_USER_SIMPLE_INFO", null);
   user.value = (res as any).data.userInfo;
 };
 

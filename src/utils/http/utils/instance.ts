@@ -13,16 +13,19 @@ const Axios = {
       console.log("request", config);
       return config;
     }, function (error) {
+      console.log("请求错误");
       // Do something with request error
-      appProps.$message.error("网络请求错误，请检查网络");
+      appProps.$message.error("请求错误");
       return Promise.reject(error);
     });
-
+    
     instance.interceptors.response.use(function (response) {
       // Do something with response data
       return response;
     }, function (error) {
-      appProps.$message.error("网络请求错误，请检查网络");
+      console.log("请求错误");
+      console.log(error);
+      appProps.$message.error(error.response.data.message);
       // Do something with response error
       return Promise.reject(error);
     });

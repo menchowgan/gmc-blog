@@ -6,9 +6,17 @@ interface ConfigModel {
 }
 
 const CONFIG_METHODS: ConfigModel = {
-  "get-user-simple-info": {
+  "GET_USER_SIMPLE_INFO": {
     url: "/get-user-info",
     method: "get"
+  },
+  "HELLO": {
+    url: "/hello",
+    method: "post"
+  },
+  "POST_USER_INFO": {
+    url: "/user/person-info-post",
+    method: "post"
   }
 }
 
