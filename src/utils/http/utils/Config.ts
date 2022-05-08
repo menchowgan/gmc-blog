@@ -7,7 +7,11 @@ interface ConfigModel {
 
 const CONFIG_METHODS: ConfigModel = {
   "GET_USER_SIMPLE_INFO": {
-    url: "/get-user-info",
+    url: "/user/get-user-simple-info",
+    method: "get"
+  },
+  "SEARCH_USER_BRIEF": {
+    url: "/user/search-user-brief",
     method: "get"
   },
   "HELLO": {
@@ -16,6 +20,10 @@ const CONFIG_METHODS: ConfigModel = {
   },
   "POST_USER_INFO": {
     url: "/user/person-info-post",
+    method: "post"
+  },
+  "AVATAR_UPLOAD": {
+    url: "/photo/avatar/upload",
     method: "post"
   }
 }

@@ -54,7 +54,7 @@ import CollapseSelector from "@/components/CollapseSelector.vue";
 import Carousel from "@/components/Carousel.vue";
 import HeaderNav from "@/components/HeaderNav.vue";
 import ArtText from "@/components/ArtText.vue";
-import { ref } from "@vue/reactivity";
+import { ref, computed } from "vue";
 import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
 import { request } from "../utils/http/index";
@@ -62,8 +62,17 @@ import { request } from "../utils/http/index";
 const user = ref<UserModel>({});
 
 const init = async () => {
-  const res = await request("GET_USER_SIMPLE_INFO", null);
-  user.value = (res as any).data.userInfo;
+  try {
+    const res = await request("GET_USER_SIMPLE_INFO", 12);
+    // user.value = (res as any).data.userInfo;
+    console.log("res", res);
+    if (res && res.data) {
+      user.value = res?.data
+      user.value.photos = res?.data.photos ? res?.data?.photos?.split(",") : []
+    }
+  } catch(e) {
+    
+  }
 };
 
 init();
@@ -111,6 +120,11 @@ const onNavTypeSelected = (type: string) => {
       type,
       userId: "menchowgan",
     },
+    params: {
+      nickname: user.value.nickname,
+      id: user.value.id,
+      avatar: user.value.avatar
+    }
   });
 };
 
@@ -121,6 +135,11 @@ const toCreate = () => {
       type: "PERSONNAL_INFO_VIEW",
       userId: "menchowgan",
     },
+    params: {
+      nickname: user.value.nickname,
+      id: user.value.id,
+      avatar: user.value.avatar
+    }
   });
 };
 
@@ -132,6 +151,11 @@ const toPhotos = (photo: PhotoModel) => {
       index: photo.id,
       userId: "menchowgan",
     },
+    params: {
+      nickname: user.value.nickname,
+      id: user.value.id,
+      avatar: user.value.avatar
+    }
   });
 };
 </script>

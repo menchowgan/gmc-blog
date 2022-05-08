@@ -12,7 +12,7 @@
       </el-form-item>
       <el-form-item label="兴趣">
         <el-tag
-          v-for="tag in form.hobbies"
+          v-for="tag in hobbies"
           :key="tag"
           class="mx-1"
           closable
@@ -45,7 +45,7 @@
       <el-form-item label="头像">
         <el-upload
           class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="/photo/avatar/upload"
           :show-file-list="true"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
@@ -75,24 +75,26 @@ import { request } from "../utils/http/index"
 
 const InputRef = ref<InstanceType<typeof ElInput>>();
 
+const hobbies = ref<string[]>([])
+
 const form = reactive<UserModel>({
   nickname: "",
   gender: "",
-  hobbies: [],
+  hobbies: "",
   avatar: "",
   brief: "",
 });
 
 const inputValue = ref("");
 const inputVisible = ref(false);
-const imageUrl = ref("");
+const imageUrl = ref<string>("");
 
 const handleClose = (tag: string) => {
-  (form.hobbies as string[] ).splice((form.hobbies as string[]).indexOf(tag), 1);
+  hobbies.value.splice(hobbies.value.indexOf(tag), 1);
 };
 const handleInputConfirm = () => {
   if (inputValue.value) {
-    (form.hobbies as string[]).push(inputValue.value);
+    hobbies.value.push(inputValue.value);
   }
   inputVisible.value = false;
   inputValue.value = "";
@@ -108,6 +110,7 @@ const showInput = () => {
 const onSubmit = async () => {
   console.log("form data", { ...form });
   try{
+    form.hobbies = hobbies.value.join(",")
     const res = await request("POST_USER_INFO", {
       ...form
     })
@@ -120,11 +123,19 @@ const handleAvatarSuccess: UploadProps["onSuccess"] = (
   uploadFile
 ) => {
   imageUrl.value = URL.createObjectURL(uploadFile.raw!);
+  console.log("image url", response);
+  if (response.code === 200){
+    form.avatar = response.data
+  } else if (response.code === 900) {
+    ElMessage.error(response.message)
+  }
 };
 
 const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
-  if (rawFile.type !== "image/jpeg") {
-    ElMessage.error("Avatar picture must be JPG format!");
+  console.log("rawFILE", rawFile);
+  
+  if (!(["image/jpeg", "images/jpg", "image/png"].includes(rawFile.type))) {
+    ElMessage.error("Avatar picture must be JPG or JPEG OR PNG format!");
     return false;
   } else if (rawFile.size / 1024 / 1024 > 2) {
     return false;

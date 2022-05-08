@@ -5,7 +5,7 @@ Mock.setup({
   timeout: "50-1000"
 })
 
-Mock.mock(/\/get-user-info/, "get", (params: any) => {
+Mock.mock(/\/get-user-simple-info/, "get", (params: any) => {
   console.log("mock", params);
   
   return {

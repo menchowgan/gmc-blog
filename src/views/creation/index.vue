@@ -17,6 +17,7 @@
       </nav>
       <div class="container flex column">
         <PersonnalInfo
+          :user="user"
           v-show="typeSelected === 'PERSONNAL_INFO_VIEW'"
           style="opacity: 0.8"
         />
@@ -51,8 +52,9 @@ import ArticleCardInCreation from "@/components/ArticleCardInCreation.vue";
 import MusicView from "@/components/MusicView.vue";
 import { ref } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
-import { ArticleSimpleInfoModel } from "../../utils/interfaces/index";
+import { ArticleSimpleInfoModel, UserModel } from "../../utils/interfaces/index";
 import { onActivated, onMounted } from "vue";
+import { request } from "../../utils/http/index";
 
 const nickname = ref<string>("Menchow GAN");
 const router = useRouter();
@@ -61,6 +63,26 @@ const route = useRoute();
 const typeSelected = ref<string>("");
 
 const cur = ref<number>(-1);
+
+const user = ref<UserModel>({})
+
+const getData = async () => {
+  if (route.params) {
+    try{
+      console.log(route.params);
+      let id = route.params.id
+      const res = await request("SEARCH_USER_BRIEF", id)
+      if (res && res.data){
+        console.log("res", res);
+        user.value = res.data
+      }
+    }catch(e){
+
+    }
+  }
+}
+
+getData()
 
 onMounted(() => {
   init();
@@ -72,6 +94,10 @@ onActivated(() => {
 });
 
 const init = () => {
+  if (route.params) {
+    nickname.value = route.params.nickname as string
+    circleUrl.value = route.params.avatar as string
+  }
   if (route.query && route.query.type) {
     console.log("------", route.query.type);
     typeSelected.value = route.query.type as string;
@@ -110,8 +136,7 @@ const onBack = () => {
 
 const currentDate = ref<Date>(new Date());
 
-const circleUrl =
-  "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
+const circleUrl = ref<string>("http://localhost/image7.jpeg");
 
 const articleSimpleInfos: Array<ArticleSimpleInfoModel> = [
   {

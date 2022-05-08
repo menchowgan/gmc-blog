@@ -11,7 +11,7 @@ interface UserModel {
   id?: number
   nickname?: string
   gender?: string
-  hobbies?: Array<string>
+  hobbies?: string
   fans?: number
   evaluate?: number
   brief?: string

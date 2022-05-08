@@ -37,10 +37,15 @@ const request = (requestName: string, params?: any, configOpts?: ConfigOptsModel
   if (config) {
     switch (config.method) {
       case "get":
-        if (configOpts) {
-
+        if (typeof params === 'string' || typeof params === 'number') {
+          config.url += `/${params}`
+          request = instance.get(config.url)
+        } else {
+          if (configOpts) {
+  
+          }
+          request = instance.get(config.url, { params })
         }
-        request = instance.get(config.url, { params })
         break;
       case "post":
         if (configOpts) {
