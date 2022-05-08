@@ -54,13 +54,6 @@ const user: UserModel = {
   ],
   articleSimplaeInfos: [
     {
-      id: 1,
-      imgUrl:
-        "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
-      title: "Yummy hamburger1",
-      content: new Date(),
-    },
-    {
       id: 2,
       imgUrl:
         "https://img0.baidu.com/it/u=403007778,499203326&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
@@ -132,6 +125,20 @@ const user: UserModel = {
     },
   ]
 }
+
+
+// const user = reactive<UserModel>({
+//   id: 0,
+//   nickname: "Menchow Gan",
+//   gender: "男",
+//   hobbies: "音乐,旅行,侦探小说",
+//   fans: 5,
+//   evaluate: 5,
+//   brief:
+//     "呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分",
+//   avatar:
+//     "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
+// });
 
 export {
   user,

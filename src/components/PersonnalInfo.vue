@@ -3,11 +3,11 @@
     <el-avatar shape="square" :size="250" :src="user.avatar" />
     <div class="content flex column">
       <div class="item flex row"><span>昵称：</span> {{ user.nickname }}</div>
-      <div class="item flex row"><span>相别：</span> {{ user.gender }}</div>
+      <div class="item flex row"><span>相别：</span> {{ gender }}</div>
       <div class="item flex row">
         <span>兴趣：</span>
         <el-tag
-          v-for="(tag, index) in user.hobbies"
+          v-for="(tag, index) in hobbies"
           :key="tag"
           size="large"
           class="mx-1"
@@ -25,27 +25,32 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, readonly, ref } from "@vue/reactivity";
 import { computed } from "@vue/runtime-core";
 import { UserModel } from "../utils/interfaces/index";
 
 const tagTypes = ["success", "info", "warning", "danger"];
 
+const props = defineProps({
+  user: {
+    type: Object,
+    default: () => ({})
+  }
+})
+
 const fans = computed(() => {
-  return user.fans ? user.fans : 0;
+  return props.user.fans ? props.user.fans : 0;
 });
 
-const user = reactive<UserModel>({
-  id: 0,
-  nickname: "Menchow Gan",
-  gender: "男",
-  hobbies: ["音乐", "旅行", "侦探小说"],
-  fans: 5,
-  evaluate: 5,
-  brief:
-    "呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分身乏术的卡夫卡呃我分",
-  avatar: "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+const gender = computed(() => {
+  return props.user.gender === "m" ? "男" : "女"
+})
+
+const hobbies = computed(() => {
+  if ((props.user as UserModel).hobbies) {
+    return ((props.user as UserModel).hobbies as string).split(",");
+  }
 });
+
 </script>
 
 <style lang="scss" scoped>
