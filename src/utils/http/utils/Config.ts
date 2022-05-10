@@ -25,6 +25,14 @@ const CONFIG_METHODS: ConfigModel = {
   "AVATAR_UPLOAD": {
     url: "/photo/avatar/upload",
     method: "post"
+  },
+  "PHOTO_UPLOAD": {
+    url: "/photo/user/photos/upload",
+    method: "post"
+  },
+  "DELETE_UPLOAD": {
+    url: "/photo/user/photos/delete",
+    method: "delete"
   }
 }
 

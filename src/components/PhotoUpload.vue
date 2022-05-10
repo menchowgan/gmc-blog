@@ -1,9 +1,9 @@
 <template>
   <div class="photo-upload flex column">
-    <p> Photos -- {{ title }} </p>
+    <p>Photos -- {{ title }}</p>
     <el-upload
       class="el-upload flex row"
-      action="https://jsonplaceholder.typicode.com/posts/"
+      :action="`/photo/user/photos/upload/${userid}`"
       list-type="picture-card"
       :disabled="cannotUpload"
       :on-preview="handlePictureCardPreview"
@@ -20,42 +20,62 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Plus } from '@element-plus/icons-vue'
-import type { UploadProps, UploadUserFile } from 'element-plus'
+import { ref, watchEffect } from "vue";
+import { Plus } from "@element-plus/icons-vue";
+import { ElMessage, UploadProps, UploadUserFile } from "element-plus";
+import { request } from "../utils/http";
 
-defineProps({
+const props = defineProps({
+  userid: {
+    type: Number,
+  },
+  photoList: {
+    type: Array,
+    default: () => [],
+  },
   cannotUpload: {
     type: Boolean,
-    default: false
+    default: false,
   },
   title: {
     type: String,
-    default: "view"
+    default: "view",
+  },
+});
+
+const fileList = ref<UploadUserFile[]>([]);
+
+watchEffect(() => {
+  fileList.value = props.photoList as UploadUserFile[];
+});
+
+const dialogImageUrl = ref<string>("");
+const dialogVisible = ref<boolean>(false);
+
+const handleRemove: UploadProps["onRemove"] = async (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles);
+  let params = uploadFile.url?.split("/") as Array<string>;
+  let url = `${params[params?.length - 2]}/${params[params?.length - 1]}`;
+  const res = await request("DELETE_UPLOAD", {
+    url,
+  });
+  if ((res as any).code === 200) {
+    ElMessage.success((res as any).message)
   }
-})
+};
 
-const fileList = ref<UploadUserFile[]>([])
-
-const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
-
-const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
-  console.log(uploadFile, uploadFiles)
-}
-
-const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
-  dialogImageUrl.value = uploadFile.url!
-  dialogVisible.value = true
-}
-
+const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url!;
+  dialogVisible.value = true;
+  console.log(uploadFile, fileList);
+};
 </script>
 
 <style lang="scss" scoped>
 @import "../style/flex-style.scss";
 @import "../style/theme.scss";
 
-.photo-upload{
+.photo-upload {
   width: 99%;
   height: 900px;
   margin-top: 5px;
@@ -63,12 +83,12 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
   align-items: flex-start;
   border-radius: 10px;
   box-shadow: var(--el-box-shadow);
-  p{
+  p {
     margin-left: 20px;
     font-size: 30px;
     color: $theme-color;
   }
-  .el-upload{
+  .el-upload {
     flex: 1;
     width: 96%;
     margin-top: 20px;
@@ -77,6 +97,10 @@ const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
     justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
+  }
+
+  .el-dialog .el-dialog__body img {
+    width: 96%;
   }
 }
 </style>

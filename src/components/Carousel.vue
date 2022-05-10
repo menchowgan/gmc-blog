@@ -35,7 +35,8 @@ const toPhotos = (photo: PhotoModel) => {
   justify-content: flex-start;
   flex-wrap: wrap;
   .el-image {
-    width: 18%; 
+    width: 4vw;
+    height: 4vw;
     margin-left: 35px; 
     margin-bottom: 30px;
     border-radius: 10px;

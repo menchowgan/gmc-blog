@@ -22,10 +22,13 @@
           style="opacity: 0.8"
         />
         <PersonnalInfoEdit
+          :userid="user.id"
           v-show="typeSelected === 'PERSONNAL_INFO_EDIT'"
           style="opacity: 0.8"
         />
         <PhotoUpload
+          :userid="user.id"
+          :photoList="photoList"
           v-show="['PHOTO_UPLOAD', 'PHOTO_VIEW'].includes(typeSelected)"
           :cannot-upload="typeSelected === 'PHOTO_VIEW'"
           :title="typeSelected === 'PHOTO_VIEW' ? '查看' : '上传'"
@@ -52,37 +55,42 @@ import ArticleCardInCreation from "@/components/ArticleCardInCreation.vue";
 import MusicView from "@/components/MusicView.vue";
 import { ref } from "@vue/reactivity";
 import { useRoute, useRouter } from "vue-router";
-import { ArticleSimpleInfoModel, UserModel } from "../../utils/interfaces/index";
+import {
+  ArticleSimpleInfoModel,
+  PhotoModel,
+  UserModel,
+} from "../../utils/interfaces/index";
 import { onActivated, onMounted } from "vue";
 import { request } from "../../utils/http/index";
+import { useUserInfoStore } from "@/store";
 
 const nickname = ref<string>("Menchow GAN");
 const router = useRouter();
 const route = useRoute();
+const userStore = useUserInfoStore();
 
 const typeSelected = ref<string>("");
 
 const cur = ref<number>(-1);
 
-const user = ref<UserModel>({})
+const user = ref<UserModel>({});
+const photoList = ref<PhotoModel[]>([]);
 
 const getData = async () => {
-  if (route.params) {
-    try{
-      console.log(route.params);
-      let id = route.params.id
-      const res = await request("SEARCH_USER_BRIEF", id)
-      if (res && res.data){
+  if ((userStore.userInfo as UserModel).id) {
+    photoList.value = (userStore.userInfo as UserModel).photos || [];
+    try {
+      let id = (userStore.userInfo as UserModel).id;
+      const res = await request("SEARCH_USER_BRIEF", id);
+      if (res && res.data) {
         console.log("res", res);
-        user.value = res.data
+        user.value = res.data;
       }
-    }catch(e){
-
-    }
+    } catch (e) {}
   }
-}
+};
 
-getData()
+getData();
 
 onMounted(() => {
   init();
@@ -94,10 +102,8 @@ onActivated(() => {
 });
 
 const init = () => {
-  if (route.params) {
-    nickname.value = route.params.nickname as string
-    circleUrl.value = route.params.avatar as string
-  }
+  nickname.value = (userStore.userInfo as UserModel).nickname as string;
+  circleUrl.value = (userStore.userInfo as UserModel).avatar as string;
   if (route.query && route.query.type) {
     console.log("------", route.query.type);
     typeSelected.value = route.query.type as string;
@@ -136,7 +142,7 @@ const onBack = () => {
 
 const currentDate = ref<Date>(new Date());
 
-const circleUrl = ref<string>("http://localhost/image7.jpeg");
+const circleUrl = ref<string>("");
 
 const articleSimpleInfos: Array<ArticleSimpleInfoModel> = [
   {
@@ -246,7 +252,7 @@ const options = [
   {
     title: "照片 Photos",
     opts: [
-      // { label: "上传 Upload", value: "PHOTO_UPLOAD" },
+      { label: "上传 Upload", value: "PHOTO_UPLOAD" },
       { label: "查看 View", value: "PHOTO_VIEW" },
     ],
   },

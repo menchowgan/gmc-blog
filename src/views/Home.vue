@@ -37,7 +37,7 @@
             text="MY -Photo"
           />
           <Carousel
-            :photos="user.photos"
+            :photos="photos"
             @toPhotos="toPhotos"
             style="width: 100%; margin-top: 50px"
           />
@@ -58,18 +58,38 @@ import { ref, computed } from "vue";
 import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
 import { request } from "../utils/http/index";
+import { useUserInfoStore } from "../store"
 
 const user = ref<UserModel>({});
 
+const photos = computed(() => {
+  let ps: PhotoModel[] = []
+  if (user.value.photos && user.value.photos.length){
+    user.value.photos.forEach((item, index) => {
+      if (index < 6) {
+        ps.push(item)
+      }
+    })
+  }
+  return ps
+})
+
 const init = async () => {
   try {
+    const userStore = useUserInfoStore()
+    const usertemp: UserModel = userStore.userInfo
+    if(usertemp && usertemp.id as number > 0){
+      user.value = usertemp
+      return
+    }
     const res = await request("GET_USER_SIMPLE_INFO", 12);
-    // user.value = (res as any).data.userInfo;
     console.log("res", res);
     if (res && res.data) {
       user.value = res?.data
-      user.value.photos = res?.data.photos ? res?.data?.photos?.split(",") : []
+      userStore.userInfo = user.value
     }
+    console.log("user store", userStore.userInfo);
+    
   } catch(e) {
     
   }

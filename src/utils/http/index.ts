@@ -31,7 +31,7 @@ interface ConfigOptsModel {
   cancelToken?: object
 }
 
-const request = (requestName: string, params?: any, configOpts?: ConfigOptsModel) => {
+function request(requestName: string, params?: any, configOpts?: ConfigOptsModel) {
   const config = CONFIG_METHODS[requestName]
   let request
   if (config) {
@@ -52,6 +52,16 @@ const request = (requestName: string, params?: any, configOpts?: ConfigOptsModel
 
         }
         request = instance.post(config.url, params)
+        break;
+      case "delete":
+        let data = {}
+        if (configOpts) {
+          if (configOpts.data) {
+            data = configOpts.data
+          }
+        }
+        data = params
+        request = instance.delete(config.url, {data})
         break;
     }
     return request

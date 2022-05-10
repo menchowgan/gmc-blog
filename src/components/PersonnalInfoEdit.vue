@@ -45,7 +45,7 @@
       <el-form-item label="头像">
         <el-upload
           class="avatar-uploader"
-          action="/photo/avatar/upload"
+          :action="`/photo/avatar/upload/${userid}`"
           :show-file-list="true"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, toRefs } from "@vue/reactivity";
+import { reactive, ref } from "@vue/reactivity";
 import { nextTick } from "@vue/runtime-core";
 import { UserModel } from "../utils/interfaces/index";
 import type { ElInput } from "element-plus";
@@ -72,6 +72,12 @@ import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 
 import { request } from "../utils/http/index"
+
+defineProps({
+  userid: {
+    type: Number
+  }
+})
 
 const InputRef = ref<InstanceType<typeof ElInput>>();
 
