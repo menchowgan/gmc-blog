@@ -2,7 +2,7 @@
   <div class="images">
     <el-image
       v-for="item in (photos as Array<PhotoModel>)"
-      :key="item.url"
+      :key="item.id"
       :src="item.url"
       @click="() => toPhotos({url: item.url, id: item.id})"
     />

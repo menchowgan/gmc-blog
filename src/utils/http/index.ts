@@ -31,36 +31,38 @@ interface ConfigOptsModel {
   cancelToken?: object
 }
 
-function request(requestName: string, params?: any, configOpts?: ConfigOptsModel) {
+function request(requestName: string, configOpts?: ConfigOptsModel): any
+function request(requestName: string, params?: any, configOpts?: ConfigOptsModel): any
+function request(requestName: string, params?: any, conf?: any): any{
   const config = CONFIG_METHODS[requestName]
   let request
   if (config) {
+    let parameter = params
     switch (config.method) {
       case "get":
         if (typeof params === 'string' || typeof params === 'number') {
-          config.url += `/${params}`
-          request = instance.get(config.url)
+          request = instance.get(`${config.url}/${params}`)
         } else {
-          if (configOpts) {
-  
+          if (conf && conf.params) {
+            parameter = conf.params
           }
-          request = instance.get(config.url, { params })
+          request = instance.get(config.url, { params: parameter })
         }
         break;
       case "post":
-        if (configOpts) {
-
+        if (params && params.params) {
+          parameter = params.params
         }
-        request = instance.post(config.url, params)
+        request = instance.post(config.url, parameter)
         break;
       case "delete":
         let data = {}
-        if (configOpts) {
-          if (configOpts.data) {
-            data = configOpts.data
-          }
+        console.log(" params is ConfigOptsModel", params as ConfigOptsModel);
+        
+        if (params && params.data) {
+          parameter = params.data
         }
-        data = params
+        data = parameter
         request = instance.delete(config.url, {data})
         break;
     }

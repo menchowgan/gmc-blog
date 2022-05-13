@@ -1,6 +1,6 @@
 <template>
   <div class="photo-upload flex column">
-    <p>Photos -- {{ title }}</p>
+    <p>Pictures -- {{ title }}</p>
     <el-upload
       class="el-upload flex row"
       :action="`/photo/user/photos/upload/${userid}`"
@@ -33,6 +33,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  curImgUrl: {
+    type: String,
+    default: ""
+  },
   cannotUpload: {
     type: Boolean,
     default: false,
@@ -48,6 +52,13 @@ const fileList = ref<UploadUserFile[]>([]);
 watchEffect(() => {
   fileList.value = props.photoList as UploadUserFile[];
 });
+
+watchEffect(() => {
+  if (props.curImgUrl) {
+    dialogImageUrl.value = props.curImgUrl;
+    dialogVisible.value = true;
+  }
+})
 
 const dialogImageUrl = ref<string>("");
 const dialogVisible = ref<boolean>(false);

@@ -33,7 +33,19 @@ const CONFIG_METHODS: ConfigModel = {
   "DELETE_UPLOAD": {
     url: "/photo/user/photos/delete",
     method: "delete"
-  }
+  },
+  "MUSIC_UPLOAD": {
+    url: "/music/upload",
+    method: "post"
+  },
+  "MUSIC_COVER_UPLOAD": {
+    url: "/music/cover/upload",
+    method: "post"
+  },
+  "MUSIC_USER_UPLOAD": {
+    url: "/music/user/upload",
+    method: "post"
+  },
 }
 
 export default CONFIG_METHODS;

@@ -29,9 +29,10 @@
         <PhotoUpload
           :userid="user.id"
           :photoList="photoList"
-          v-show="['PHOTO_UPLOAD', 'PHOTO_VIEW'].includes(typeSelected)"
+          :curImgUrl="curImgUrl"
+          v-show="['PHOTO_EDIT', 'PHOTO_VIEW'].includes(typeSelected)"
           :cannot-upload="typeSelected === 'PHOTO_VIEW'"
-          :title="typeSelected === 'PHOTO_VIEW' ? '查看' : '上传'"
+          :title="typeSelected === 'PHOTO_VIEW' ? '查看' : '编辑'"
           style="opacity: 0.8"
         />
         <ArticleCardInCreation
@@ -39,7 +40,17 @@
           :articleSimpleInfos="articleSimpleInfos"
           style="opacity: 0.8"
         />
-        <MusicView v-show="typeSelected === 'MUSIC_VIEW'" style="opacity: 0.8" />
+        <MusicView
+          :audios="user.audios"
+          v-show="typeSelected === 'MUSIC_VIEW'"
+          style="opacity: 0.8"
+        />
+        <MusicUpload
+          :userid="user.id"
+          v-show="typeSelected === 'MUSIC_UPLOAD'"
+          @refresh="onRefresh"
+          style="opacity: 0.8"
+        />
       </div>
     </div>
   </div>
@@ -51,6 +62,7 @@ import PersonnalInfo from "@/components/PersonnalInfo.vue";
 import ArtText from "@/components/ArtText.vue";
 import PersonnalInfoEdit from "@/components/PersonnalInfoEdit.vue";
 import PhotoUpload from "@/components/PhotoUpload.vue";
+import MusicUpload from "@/components/MusicUpload.vue";
 import ArticleCardInCreation from "@/components/ArticleCardInCreation.vue";
 import MusicView from "@/components/MusicView.vue";
 import { ref } from "@vue/reactivity";
@@ -72,6 +84,7 @@ const userStore = useUserInfoStore();
 const typeSelected = ref<string>("");
 
 const cur = ref<number>(-1);
+const curImgUrl = ref<string>("");
 
 const user = ref<UserModel>({});
 const photoList = ref<PhotoModel[]>([]);
@@ -85,12 +98,17 @@ const getData = async () => {
       if (res && res.data) {
         console.log("res", res);
         user.value = res.data;
+        user.value.audios?.forEach(audio => audio.paused = true)
       }
     } catch (e) {}
   }
 };
 
 getData();
+
+const onRefresh = () => {
+  getData()
+}
 
 onMounted(() => {
   init();
@@ -120,6 +138,9 @@ const init = () => {
       case "PHOTOS_VIEW":
         typeSelected.value = "PHOTO_VIEW";
         cur.value = 2;
+        if (route.params.curImgUrl) {
+          curImgUrl.value = route.params.curImgUrl as string;
+        }
         break;
       case "MUSIC_ABOUT":
         typeSelected.value = "MUSIC_VIEW";
@@ -252,14 +273,14 @@ const options = [
   {
     title: "照片 Photos",
     opts: [
-      { label: "上传 Upload", value: "PHOTO_UPLOAD" },
+      { label: "编辑 Edit", value: "PHOTO_EDIT" },
       { label: "查看 View", value: "PHOTO_VIEW" },
     ],
   },
   {
     title: "音乐 Music",
     opts: [
-      // { label: "上传 Upload", value: "MUSIC_UPLOAD" },
+      { label: "上传 Upload", value: "MUSIC_UPLOAD" },
       { label: "查看 View", value: "MUSIC_VIEW" },
     ],
   },

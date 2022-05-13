@@ -58,41 +58,38 @@ import { ref, computed } from "vue";
 import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
 import { request } from "../utils/http/index";
-import { useUserInfoStore } from "../store"
+import { useUserInfoStore } from "../store";
 
 const user = ref<UserModel>({});
 
 const photos = computed(() => {
-  let ps: PhotoModel[] = []
-  if (user.value.photos && user.value.photos.length){
+  let ps: PhotoModel[] = [];
+  if (user.value.photos && user.value.photos.length) {
     user.value.photos.forEach((item, index) => {
       if (index < 6) {
-        ps.push(item)
+        ps.push(item);
       }
-    })
+    });
   }
-  return ps
-})
+  return ps;
+});
 
 const init = async () => {
   try {
-    const userStore = useUserInfoStore()
-    const usertemp: UserModel = userStore.userInfo
-    if(usertemp && usertemp.id as number > 0){
-      user.value = usertemp
-      return
+    const userStore = useUserInfoStore();
+    const usertemp: UserModel = userStore.userInfo;
+    if (usertemp && (usertemp.id as number) > 0) {
+      user.value = usertemp;
+      return;
     }
     const res = await request("GET_USER_SIMPLE_INFO", 12);
     console.log("res", res);
     if (res && res.data) {
-      user.value = res?.data
-      userStore.userInfo = user.value
+      user.value = res?.data;
+      userStore.userInfo = user.value;
     }
     console.log("user store", userStore.userInfo);
-    
-  } catch(e) {
-    
-  }
+  } catch (e) {}
 };
 
 init();
@@ -143,8 +140,8 @@ const onNavTypeSelected = (type: string) => {
     params: {
       nickname: user.value.nickname,
       id: user.value.id,
-      avatar: user.value.avatar
-    }
+      avatar: user.value.avatar,
+    },
   });
 };
 
@@ -158,8 +155,8 @@ const toCreate = () => {
     params: {
       nickname: user.value.nickname,
       id: user.value.id,
-      avatar: user.value.avatar
-    }
+      avatar: user.value.avatar,
+    },
   });
 };
 
@@ -167,15 +164,11 @@ const toPhotos = (photo: PhotoModel) => {
   router.push({
     name: "Creation",
     query: {
-      type: "PHOTOS_VIEW",
-      index: photo.id,
-      userId: "menchowgan",
+      type: "PHOTOS_VIEW"
     },
     params: {
-      nickname: user.value.nickname,
-      id: user.value.id,
-      avatar: user.value.avatar
-    }
+      curImgUrl: photo.url
+    },
   });
 };
 </script>

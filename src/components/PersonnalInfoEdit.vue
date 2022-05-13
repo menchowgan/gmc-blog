@@ -30,12 +30,7 @@
           @keyup.enter="handleInputConfirm"
           @blur="handleInputConfirm"
         />
-        <el-button
-          v-else
-          class="button-new-tag ml-1"
-          size="small"
-          @click="showInput"
-        >
+        <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput">
           + New Tag
         </el-button>
       </el-form-item>
@@ -65,23 +60,23 @@
 <script lang="ts" setup>
 import { reactive, ref } from "@vue/reactivity";
 import { nextTick } from "@vue/runtime-core";
-import { UserModel } from "../utils/interfaces/index";
+import { UserModel, MusicModel } from "../utils/interfaces/index";
 import type { ElInput } from "element-plus";
 import type { UploadProps } from "element-plus";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 
-import { request } from "../utils/http/index"
+import { request } from "../utils/http/index";
 
 defineProps({
   userid: {
-    type: Number
-  }
-})
+    type: Number,
+  },
+});
 
 const InputRef = ref<InstanceType<typeof ElInput>>();
 
-const hobbies = ref<string[]>([])
+const hobbies = ref<string[]>([]);
 
 const form = reactive<UserModel>({
   nickname: "",
@@ -91,8 +86,14 @@ const form = reactive<UserModel>({
   brief: "",
 });
 
+const musicForm = reactive<MusicModel>({
+  avatar: "",
+  audioUrl: ""
+})
+
 const inputValue = ref("");
 const inputVisible = ref(false);
+
 const imageUrl = ref<string>("");
 
 const handleClose = (tag: string) => {
@@ -115,32 +116,30 @@ const showInput = () => {
 
 const onSubmit = async () => {
   console.log("form data", { ...form });
-  try{
-    form.hobbies = hobbies.value.join(",")
+  try {
+    form.hobbies = hobbies.value.join(",");
     const res = await request("POST_USER_INFO", {
-      ...form
-    })
+      ...form,
+    });
     console.log("user info post", res);
-  }catch(e){}
+  } catch (e) {}
 };
 
-const handleAvatarSuccess: UploadProps["onSuccess"] = (
-  response,
-  uploadFile
-) => {
+
+const handleAvatarSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
   imageUrl.value = URL.createObjectURL(uploadFile.raw!);
   console.log("image url", response);
-  if (response.code === 200){
-    form.avatar = response.data
+  if (response.code === 200) {
+    form.avatar = response.data;
   } else if (response.code === 900) {
-    ElMessage.error(response.message)
+    ElMessage.error(response.message);
   }
 };
 
 const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
   console.log("rawFILE", rawFile);
-  
-  if (!(["image/jpeg", "images/jpg", "image/png"].includes(rawFile.type))) {
+
+  if (!["image/jpeg", "images/jpg", "image/png"].includes(rawFile.type)) {
     ElMessage.error("Avatar picture must be JPG or JPEG OR PNG format!");
     return false;
   } else if (rawFile.size / 1024 / 1024 > 2) {
@@ -188,6 +187,8 @@ const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
   color: #8c939d;
   width: 178px;
   height: 178px;
+  margin-left: 10px;;
   text-align: center;
+  border: 1px solid #ccc;
 }
 </style>

@@ -10,7 +10,7 @@
       <div class="content flex row">
         <el-avatar
           :size="250"
-          :src="item.icon"
+          :src="item.avatar"
           :class="{ image: true, rotatingImg: !item.paused }"
         />
         <div class="section flex column">
@@ -19,7 +19,7 @@
           </span>
           <div class="body flex column">
             <MusicPlayer
-              :music="item.url"
+              :music="item.audioUrl"
               :music-idx="index"
               :shouldPaused="item.paused"
               @shouldRotate="setRotate"
@@ -27,7 +27,7 @@
             />
           </div>
           <div class="evaluation">
-            <span>评价：</span> {{ item.evaluation }}
+            <span>评价：</span> {{ item.evalution }}
           </div>
         </div>
       </div>
@@ -36,11 +36,25 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "@vue/reactivity";
+import { ref, watchEffect } from "vue";
 import MusicPlayer from "@/components/MusicPlayer.vue";
+import {MusicModel} from "../utils/interfaces/index"
+
+const props = defineProps({
+  audios: {
+    type: Array,
+    default: () => []
+  }
+})
+
+const musicInfos = ref<MusicModel[]>([]);
+
+watchEffect(() => {
+  musicInfos.value = props.audios as MusicModel[]
+})
 
 const curMusicStateChanged = (cur: { idx: number; paused: boolean }) => {
-  musicInfos.forEach((info, index) => {
+  musicInfos.value.forEach((info, index) => {
     if (cur.idx === index) {
       info.paused = cur.paused;
     } else {
@@ -50,29 +64,9 @@ const curMusicStateChanged = (cur: { idx: number; paused: boolean }) => {
 };
 
 const setRotate = (state: {idx: number, pause: boolean}) => {
-  musicInfos[state.idx].paused = state.pause
+  musicInfos.value[state.idx].paused = state.pause
 }
 
-const musicInfos = reactive([
-  {
-    id: 0,
-    title: "七里香",
-    artist: "周杰伦",
-    icon: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Foss.tan8.com%2Fyuepuku%2F74%2F37155%2F37155_prev.jpg&refer=http%3A%2F%2Foss.tan8.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1654150209&t=c60235bd3990063596eb49b827ec0de9",
-    url: "http://dl.stream.qqmusic.qq.com/C4000012Ez0a1tFcOI.m4a?guid=5521947640&vkey=59D064E8241C62A9DB9A19AD03E38803D604EB161BC85317AD0C540B43F2C30DC02961D71FE3460E513B461E7E3CE3150378B9B27C3A346A&uin=1657943220&fromtag=120002",
-    evaluation: "太好听了, 清新的风格，过了n多年还是好听😂😂😂",
-    paused: true,
-  },
-  {
-    id: 1,
-    title: "搁浅",
-    artist: "周杰伦",
-    icon: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Foss.tan8.com%2Fyuepuku%2F74%2F37155%2F37155_prev.jpg&refer=http%3A%2F%2Foss.tan8.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1654150209&t=c60235bd3990063596eb49b827ec0de9",
-    url: "http://dl.stream.qqmusic.qq.com/C400004UlK9x0jeuow.m4a?guid=3793929052&vkey=545258706B3D45EC41738B99D04D7F06419F7530531DE45323E4F0394F7C9B9D15EE6CADBD088796547A5B18745F515196E79F13E6C24FDB&uin=1657943220&fromtag=120002",
-    evaluation: "太好听了, 清新的风格，过了n多年还是好听😂😂😂",
-    paused: true,
-  },
-]);
 </script>
 
 <style lang="scss" scoped>
