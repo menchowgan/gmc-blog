@@ -1,9 +1,11 @@
 interface ArticleSimpleInfoModel {
   id?: number
+  userId?: number
   imgUrl?: string
   title?: string
-  content?: Date | string
-  date?: Date,
+  content?: string
+  date?: string,
+  brief?: string 
   type?: string 
 }
 
@@ -18,7 +20,7 @@ interface UserModel {
   avatar?: string
   photos?: Array<PhotoModel>
   audios?: Array<MusicModel>
-  articleSimplaeInfos?: Array<ArticleSimpleInfoModel>
+  articleSimpleInfos?: Array<ArticleSimpleInfoModel>
 }
 
 interface PhotoModel {

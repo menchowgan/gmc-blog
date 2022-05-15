@@ -48,7 +48,7 @@ import { Plus } from "@element-plus/icons-vue";
 
 import { request } from "../utils/http/index";
 
-defineProps({
+const props = defineProps({
   userid: {
     type: Number,
   },
@@ -61,7 +61,7 @@ const musicForm = reactive<MusicModel>({
   avatar: "",
   audioUrl: "",
   artist: "",
-  evalution: "太好听了, 清新的风格，过了n多年还是好听😂😂😂",
+  evalution: "太好听了！",
 });
 
 const emits = defineEmits(["refresh"])
@@ -71,6 +71,7 @@ const handleCoverSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
   console.log("music avatar", response);
   if (response.code === 200) {
     musicForm.avatar = response.data;
+    ElMessage.success("歌曲封面上传成功");
   } else if (response.code === 900) {
     ElMessage.error(response.message);
   }
@@ -80,6 +81,7 @@ const handleMusicSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
   console.log("music url", response);
   if (response.code === 200) {
     musicForm.audioUrl = response.data;
+    ElMessage.success("歌曲音频上传成功");
   } else if (response.code === 900) {
     ElMessage.error(response.message);
   }
@@ -89,11 +91,14 @@ const onMusicSubmit = async () => {
   console.log("music form data", { ...musicForm });
   try {
     const res = await request("MUSIC_USER_UPLOAD", {
-      userId: 12,
+      userId: props.userid,
       ...musicForm,
     });
     console.log("user music info post", res);
-    emits("refresh")
+    if (res.code === 0) {
+      ElMessage.success("歌曲音频上传成功");
+      emits("refresh")
+    }
   } catch (e) {}
 };
 </script>
@@ -103,7 +108,8 @@ const onMusicSubmit = async () => {
 @import "../style/theme.scss";
 .music-info-edit {
   width: 99%;
-  margin-top: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   justify-content: flex-start;
   align-items: flex-start;
   background-color: white;

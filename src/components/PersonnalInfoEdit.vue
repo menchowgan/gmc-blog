@@ -122,15 +122,18 @@ const onSubmit = async () => {
       ...form,
     });
     console.log("user info post", res);
+    if (res.code === 0) {
+      ElMessage.success("用户信息上传成功");
+    }
   } catch (e) {}
 };
-
 
 const handleAvatarSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
   imageUrl.value = URL.createObjectURL(uploadFile.raw!);
   console.log("image url", response);
   if (response.code === 200) {
     form.avatar = response.data;
+    ElMessage.success("用户头像图片上传成功");
   } else if (response.code === 900) {
     ElMessage.error(response.message);
   }
@@ -154,8 +157,10 @@ const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
 @import "../style/theme.scss";
 
 .personnal-info-edit {
-  width: 99%;
-  margin-top: 5px;
+  width: 100%;
+  height: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
   justify-content: flex-start;
   align-items: flex-start;
   background-color: white;

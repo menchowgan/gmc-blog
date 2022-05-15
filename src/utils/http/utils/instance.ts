@@ -2,7 +2,10 @@ import axios from "axios"
 import { App } from "vue";
 
 const instance = axios.create({
-  timeout: 1000
+  timeout: 1500,
+  headers: {
+    "Content-type": "application/json;charset=utf-8"
+  }
 })
 
 const Axios = {

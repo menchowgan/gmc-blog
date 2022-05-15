@@ -13,7 +13,7 @@
     </div>
     <div class="body">
       <div class="articles flex column">
-        <ArticleCard :articleSimpleInfos="user.articleSimplaeInfos" />
+        <ArticleCard :articleSimpleInfos="user.articleSimpleInfos" />
       </div>
       <div class="sider">
         <nav class="navigator">
@@ -122,10 +122,13 @@ const options = [
   },
 ];
 
-const onTypeChanged = (type: string) => {
+const onTypeChanged = async (type: string) => {
   console.log("new type selected", type);
   if (type) {
-    // TODO
+    const res = await request("ARTICLE_QUERY_BY_TYPE", `${user.value.id}/${type}`);
+    if (res.code === 200) {
+      user.value.articleSimpleInfos = res.data;
+    }
   }
 };
 
@@ -133,14 +136,8 @@ const onNavTypeSelected = (type: string) => {
   console.log("new type selected", type);
   router.push({
     name: "Creation",
-    query: {
-      type,
-      userId: "menchowgan",
-    },
     params: {
-      nickname: user.value.nickname,
-      id: user.value.id,
-      avatar: user.value.avatar,
+      type,
     },
   });
 };
@@ -148,14 +145,9 @@ const onNavTypeSelected = (type: string) => {
 const toCreate = () => {
   router.push({
     name: "Creation",
-    query: {
+    params: {
       type: "PERSONNAL_INFO_VIEW",
       userId: "menchowgan",
-    },
-    params: {
-      nickname: user.value.nickname,
-      id: user.value.id,
-      avatar: user.value.avatar,
     },
   });
 };
@@ -163,10 +155,8 @@ const toCreate = () => {
 const toPhotos = (photo: PhotoModel) => {
   router.push({
     name: "Creation",
-    query: {
-      type: "PHOTOS_VIEW"
-    },
     params: {
+      type: "PHOTOS_VIEW",
       curImgUrl: photo.url
     },
   });
@@ -286,7 +276,7 @@ const toPhotos = (photo: PhotoModel) => {
   }
 
   .articles {
-    height: 2000px;
+    max-height: 2000px;
     opacity: 0.9;
     min-width: 500px;
     flex: 3;

@@ -46,6 +46,22 @@ const CONFIG_METHODS: ConfigModel = {
     url: "/music/user/upload",
     method: "post"
   },
+  "ARTICLE_PHOTO_UPLOAD": {
+    url: "/article/photo/upload",
+    method: "post"
+  },
+  "ARTICLE_UPLOAD": {
+    url: "/article/upload",
+    method: "post"
+  },
+  "ARTICLE_QUERY": {
+    url: "/article/query",
+    method: "get"
+  },
+  "ARTICLE_QUERY_BY_TYPE": {
+    url: "/article/query-by-type",
+    method: "get"
+  },
 }
 
 export default CONFIG_METHODS;

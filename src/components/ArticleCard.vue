@@ -6,13 +6,14 @@
       :body-style="{ height: '96%', width: '100%' }"
       v-for="item in (articleSimpleInfos as ArticleSimpleInfoModel[])"
       :key="item.id"
+      @click="() => toArticleInfo(item.id as number)"
     >
-      <div class="content">
+      <div class="content flex row">
         <el-image fit="cover" :src="item.imgUrl" class="image" />
-        <div class="section">
+        <div class="section flex column">
           <span class="title">{{ item.title }}</span>
-          <p style="text-align: left">{{ item.content }}</p>
-          <el-button type="text" class="button">MORE</el-button>
+          <p style="text-align: left">{{ item.brief }}</p>
+          <el-button type="text" class="button"> Read More </el-button>
         </div>
       </div>
     </el-card>
@@ -20,7 +21,9 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from "vue-router";
 import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
+const router = useRouter()
 
 defineProps({
   articleSimpleInfos: {
@@ -28,12 +31,26 @@ defineProps({
     default: () => [],
   },
 });
+
+const toArticleInfo = (id: number) => {
+  router.push({
+    name: "ArticleInfo",
+    params: {
+      articleId: id
+    }
+  })
+}
+
+const content = (content: string): string => {
+  return content.substring(0, 200);
+};
 </script>
 
 <style scoped lang="scss">
 @import "../style/theme.scss";
+@import "../style/flex-style.scss";
 .article-card {
-  width: 100%;
+  width: 98%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -46,48 +63,46 @@ defineProps({
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    &:hover{
+    &:hover {
       cursor: pointer;
     }
     .content {
       width: 100%;
       height: 96%;
-      display: flex;
-      flex-direction: row;
       justify-content: flex-start;
       align-items: flex-start;
-      p {
-        height: 80%;
-        font-size: 24px;
-        color: #999;
-        margin-top: 13px;
-        margin-left: 13px;
-      }
       .image {
-        min-width: 24%;
+        flex: 1;
         display: block;
         height: 86%;
         margin-top: 30px;
         border-radius: 16px;
       }
-      .title {
-        font-size: 30px;
-        &:hover{
-          @include hover-style;
-        }
-      }
-      .button {
-        padding: 0;
-        min-height: auto;
-      }
       .section {
-        width: 74%;
+        flex: 3;
         height: 100%;
         padding: 14px;
-        display: flex;
-        flex-direction: column;
         justify-content: space-between;
         align-items: flex-end;
+        .title {
+          flex: 1;
+          font-size: 30px;
+          &:hover {
+            @include hover-style;
+          }
+        }
+        p {
+          flex: 5;
+          font-size: 24px;
+          color: #999;
+          margin-top: 13px;
+          margin-left: 13px;
+        }
+        .button {
+          flex: 1;
+          padding: 0;
+          min-height: auto;
+        }
       }
     }
   }
