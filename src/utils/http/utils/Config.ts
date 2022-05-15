@@ -25,7 +25,43 @@ const CONFIG_METHODS: ConfigModel = {
   "AVATAR_UPLOAD": {
     url: "/photo/avatar/upload",
     method: "post"
-  }
+  },
+  "PHOTO_UPLOAD": {
+    url: "/photo/user/photos/upload",
+    method: "post"
+  },
+  "DELETE_UPLOAD": {
+    url: "/photo/user/photos/delete",
+    method: "delete"
+  },
+  "MUSIC_UPLOAD": {
+    url: "/music/upload",
+    method: "post"
+  },
+  "MUSIC_COVER_UPLOAD": {
+    url: "/music/cover/upload",
+    method: "post"
+  },
+  "MUSIC_USER_UPLOAD": {
+    url: "/music/user/upload",
+    method: "post"
+  },
+  "ARTICLE_PHOTO_UPLOAD": {
+    url: "/article/photo/upload",
+    method: "post"
+  },
+  "ARTICLE_UPLOAD": {
+    url: "/article/upload",
+    method: "post"
+  },
+  "ARTICLE_QUERY": {
+    url: "/article/query",
+    method: "get"
+  },
+  "ARTICLE_QUERY_BY_TYPE": {
+    url: "/article/query-by-type",
+    method: "get"
+  },
 }
 
 export default CONFIG_METHODS;

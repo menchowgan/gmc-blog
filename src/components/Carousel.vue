@@ -2,7 +2,7 @@
   <div class="images">
     <el-image
       v-for="item in (photos as Array<PhotoModel>)"
-      :key="item.url"
+      :key="item.id"
       :src="item.url"
       @click="() => toPhotos({url: item.url, id: item.id})"
     />
@@ -35,7 +35,8 @@ const toPhotos = (photo: PhotoModel) => {
   justify-content: flex-start;
   flex-wrap: wrap;
   .el-image {
-    width: 18%; 
+    width: 6vw;
+    height: 6vw;
     margin-left: 35px; 
     margin-bottom: 30px;
     border-radius: 10px;
@@ -44,6 +45,10 @@ const toPhotos = (photo: PhotoModel) => {
       animation: bounce 0.5s;
       transform: scale(1.5);
       cursor: pointer;
+    }
+    @media screen and (min-width: 1500px) {
+      width: 3vw;
+      height: 3vw;
     }
   }
 }

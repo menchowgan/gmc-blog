@@ -13,7 +13,7 @@
     </div>
     <div class="body">
       <div class="articles flex column">
-        <ArticleCard :articleSimpleInfos="user.articleSimplaeInfos" />
+        <ArticleCard :articleSimpleInfos="user.articleSimpleInfos" />
       </div>
       <div class="sider">
         <nav class="navigator">
@@ -37,7 +37,7 @@
             text="MY -Photo"
           />
           <Carousel
-            :photos="user.photos"
+            :photos="photos"
             @toPhotos="toPhotos"
             style="width: 100%; margin-top: 50px"
           />
@@ -58,21 +58,38 @@ import { ref, computed } from "vue";
 import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
 import { request } from "../utils/http/index";
+import { useUserInfoStore } from "../store";
 
 const user = ref<UserModel>({});
 
+const photos = computed(() => {
+  let ps: PhotoModel[] = [];
+  if (user.value.photos && user.value.photos.length) {
+    user.value.photos.forEach((item, index) => {
+      if (index < 6) {
+        ps.push(item);
+      }
+    });
+  }
+  return ps;
+});
+
 const init = async () => {
   try {
+    const userStore = useUserInfoStore();
+    const usertemp: UserModel = userStore.userInfo;
+    if (usertemp && (usertemp.id as number) > 0) {
+      user.value = usertemp;
+      return;
+    }
     const res = await request("GET_USER_SIMPLE_INFO", 12);
-    // user.value = (res as any).data.userInfo;
     console.log("res", res);
     if (res && res.data) {
-      user.value = res?.data
-      user.value.photos = res?.data.photos ? res?.data?.photos?.split(",") : []
+      user.value = res?.data;
+      userStore.userInfo = user.value;
     }
-  } catch(e) {
-    
-  }
+    console.log("user store", userStore.userInfo);
+  } catch (e) {}
 };
 
 init();
@@ -105,10 +122,13 @@ const options = [
   },
 ];
 
-const onTypeChanged = (type: string) => {
+const onTypeChanged = async (type: string) => {
   console.log("new type selected", type);
   if (type) {
-    // TODO
+    const res = await request("ARTICLE_QUERY_BY_TYPE", `${user.value.id}/${type}`);
+    if (res.code === 200) {
+      user.value.articleSimpleInfos = res.data;
+    }
   }
 };
 
@@ -116,46 +136,29 @@ const onNavTypeSelected = (type: string) => {
   console.log("new type selected", type);
   router.push({
     name: "Creation",
-    query: {
-      type,
-      userId: "menchowgan",
-    },
     params: {
-      nickname: user.value.nickname,
-      id: user.value.id,
-      avatar: user.value.avatar
-    }
+      type,
+    },
   });
 };
 
 const toCreate = () => {
   router.push({
     name: "Creation",
-    query: {
+    params: {
       type: "PERSONNAL_INFO_VIEW",
       userId: "menchowgan",
     },
-    params: {
-      nickname: user.value.nickname,
-      id: user.value.id,
-      avatar: user.value.avatar
-    }
   });
 };
 
 const toPhotos = (photo: PhotoModel) => {
   router.push({
     name: "Creation",
-    query: {
-      type: "PHOTOS_VIEW",
-      index: photo.id,
-      userId: "menchowgan",
-    },
     params: {
-      nickname: user.value.nickname,
-      id: user.value.id,
-      avatar: user.value.avatar
-    }
+      type: "PHOTOS_VIEW",
+      curImgUrl: photo.url
+    },
   });
 };
 </script>
@@ -273,7 +276,7 @@ const toPhotos = (photo: PhotoModel) => {
   }
 
   .articles {
-    height: 2000px;
+    max-height: 2000px;
     opacity: 0.9;
     min-width: 500px;
     flex: 3;

@@ -6,12 +6,13 @@
       :body-style="{ height: '96%', width: '100%' }"
       v-for="item in (articleSimpleInfos as ArticleSimpleInfoModel[])"
       :key="item.id"
+      @click="() => toArticleInfo(item.id as number)"
     >
       <div class="content flex column">
         <span class="title">{{ item.title }}</span>
-        <span class="date">{{ item.date }}</span>
-        <p style="text-align: left; flex: 5">{{ item.content }}</p>
-        <el-button type="text" class="button">MORE</el-button>
+        <span class="date">{{ dateFormat("yyyy-MM-dd hh:mm:ss", new Date(item.date as string)) }}</span>
+        <p style="text-align: left; flex: 5">{{ item.brief }}</p>
+        <el-button type="text" class="button">Read More</el-button>
       </div>
     </el-card>
   </div>
@@ -19,6 +20,10 @@
 
 <script lang="ts" setup>
 import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
+import { dateFormat } from "../utils/dateFormat"
+import { useRouter } from "vue-router";
+
+const router = useRouter()
 
 defineProps({
   articleSimpleInfos: {
@@ -26,6 +31,15 @@ defineProps({
     default: () => [],
   },
 });
+
+const toArticleInfo = (id: number) => {
+  router.push({
+    name: "ArticleInfo",
+    params: {
+      articleId: id
+    }
+  })
+}
 </script>
 
 <style lang="scss" scoped>
