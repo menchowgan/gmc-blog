@@ -13,14 +13,16 @@
       <el-icon><Plus /></el-icon>
     </el-upload>
 
-    <el-dialog v-model="dialogVisible">
-      <img w-full :src="dialogImageUrl" alt="Preview Image" />
-    </el-dialog>
+    <transition name="fade" mode="out-in">
+      <div class="dialog flex row" @click="dialogVisible = false" v-if="dialogVisible">
+        <img :src="dialogImageUrl" alt="Preview Image" />
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from "vue";
+import { nextTick, ref, watch, watchEffect } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, UploadProps, UploadUserFile } from "element-plus";
 import { request } from "../utils/http";
@@ -35,7 +37,7 @@ const props = defineProps({
   },
   curImgUrl: {
     type: String,
-    default: ""
+    default: "",
   },
   cannotUpload: {
     type: Boolean,
@@ -53,15 +55,17 @@ watchEffect(() => {
   fileList.value = props.photoList as UploadUserFile[];
 });
 
-watchEffect(() => {
-  if (props.curImgUrl) {
-    dialogImageUrl.value = props.curImgUrl;
-    dialogVisible.value = true;
-  }
-})
-
 const dialogImageUrl = ref<string>("");
 const dialogVisible = ref<boolean>(false);
+
+watch(() => props.curImgUrl, (curImgUrl) => {
+  if (curImgUrl) {
+    dialogImageUrl.value = curImgUrl;
+    nextTick(() => {
+      dialogVisible.value = true;
+    })
+  }
+});
 
 const handleRemove: UploadProps["onRemove"] = async (uploadFile, uploadFiles) => {
   console.log(uploadFile, uploadFiles);
@@ -71,7 +75,7 @@ const handleRemove: UploadProps["onRemove"] = async (uploadFile, uploadFiles) =>
     url,
   });
   if ((res as any).code === 200) {
-    ElMessage.success((res as any).message)
+    ElMessage.success((res as any).message);
   }
 };
 
@@ -110,8 +114,31 @@ const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
     flex-wrap: wrap;
   }
 
-  .el-dialog .el-dialog__body img {
-    width: 96%;
+  .dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    img {
+      border: 2px solid $theme-color;
+      box-shadow: var(--el-box-shadow);
+    }
   }
+}
+
+.fade-enter-active {
+  &,
+  .fade-leave-active {
+    transition: opacity 0.2s ease;
+  }
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

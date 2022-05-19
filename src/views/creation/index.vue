@@ -45,6 +45,11 @@
           v-show="typeSelected === 'MUSIC_VIEW'"
           style="opacity: 0.8"
         />
+        <VideoView
+          :videos="user.videos"
+          v-show="typeSelected === 'VIDEO_VIEW'"
+          style="opacity: 0.8"
+        />
         <MusicUpload
           :userid="user.id"
           v-show="typeSelected === 'MUSIC_UPLOAD'"
@@ -65,7 +70,8 @@ import PhotoUpload from "@/components/PhotoUpload.vue";
 import MusicUpload from "@/components/MusicUpload.vue";
 import ArticleCardInCreation from "@/components/ArticleCardInCreation.vue";
 import MusicView from "@/components/MusicView.vue";
-import { ref, watchEffect } from "vue";
+import VideoView from "@/components/VideoView.vue";
+import { computed, ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   ArticleSimpleInfoModel,
@@ -84,11 +90,16 @@ const userStore = useUserInfoStore();
 const typeSelected = ref<string>("");
 
 const cur = ref<number>(-1);
-const curImgUrl = ref<string>("");
+const curImgUrl = computed(() => {
+  if (route.params.curImgUrl) {
+    return route.params.curImgUrl as string;
+  }
+  return "";
+});
 
 const user = ref<UserModel>({});
 
-user.value.id = (userStore.userInfo as UserModel)?.id
+user.value.id = (userStore.userInfo as UserModel)?.id;
 
 const photoList = ref<PhotoModel[]>([]);
 
@@ -96,7 +107,10 @@ const articleSimpleInfos = ref<Array<ArticleSimpleInfoModel>>([]);
 
 watchEffect(async () => {
   if (route.params.type) {
-    const res = await request("ARTICLE_QUERY_BY_TYPE", `${user.value.id}/${route.params.type}`);
+    const res = await request(
+      "ARTICLE_QUERY_BY_TYPE",
+      `${user.value.id}/${route.params.type}`
+    );
     if (res.code === 200) {
       articleSimpleInfos.value = res.data;
     }
@@ -151,9 +165,6 @@ const init = () => {
       case "PHOTOS_VIEW":
         typeSelected.value = "PHOTO_VIEW";
         cur.value = 2;
-        if (route.params.curImgUrl) {
-          curImgUrl.value = route.params.curImgUrl as string;
-        }
         break;
       case "MUSIC_ABOUT":
         typeSelected.value = "MUSIC_VIEW";
@@ -165,12 +176,12 @@ const init = () => {
 
 const onTypeChanged = (type: string) => {
   console.log("new type selected", type);
-  if (type === "ARTICLE_EDIT") {
-    router.push({
-      name: "ArticleEdit",
-    });
-    return;
-  }
+  // if (type === "ARTICLE_EDIT" || type === "VIDEO_EDIT") {
+  //   router.push({
+  //     name: "ArticleEdit",
+  //   });
+  //   return;
+  // }
   if (type) {
     typeSelected.value = type;
   }
@@ -211,6 +222,13 @@ const options = [
     opts: [
       // { label: "上传 Upload", value: "MUSIC_UPLOAD" },
       { label: "查看 View", value: "MUSIC_VIEW" },
+    ],
+  },
+  {
+    title: "视频 Video",
+    opts: [
+      // { label: "编辑 Edit", value: "VIDEO_EDIT" },
+      { label: "查看 View", value: "VIDEO_VIEW" },
     ],
   },
   {

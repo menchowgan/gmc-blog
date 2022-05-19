@@ -78,6 +78,19 @@ module.exports = {
         target: "http://127.0.0.1:8888",
         changeOrigin: true
       },
+
+      "/video/upload": {
+        target: "http://127.0.0.1:8888",
+        changeOrigin: true
+      },
+      "/video/cover/upload": {
+        target: "http://127.0.0.1:8888",
+        changeOrigin: true
+      },
+      "/video/user/upload": {
+        target: "http://127.0.0.1:8888",
+        changeOrigin: true
+      },
     },
   },
   chainWebpack: config => {

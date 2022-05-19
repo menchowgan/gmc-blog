@@ -62,6 +62,10 @@ const CONFIG_METHODS: ConfigModel = {
     url: "/article/query-by-type",
     method: "get"
   },
+  "VIDEO_USER_UPLOAD": {
+    url: "/video/user/upload",
+    method: "post"
+  },
 }
 
 export default CONFIG_METHODS;

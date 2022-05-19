@@ -34,7 +34,7 @@ import { useRoute, useRouter } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserInfoStore();
-const valueHtml = ref("<p>hello</p>");
+const valueHtml = ref("<p> 无内容 </p>");
 const date = ref<string>("")
 
 const nickname = ref<string>((userStore.userInfo as UserModel)?.nickname as string);
@@ -68,6 +68,7 @@ const onBack = () => {
   width: 100%;
   justify-content: center;
   align-items: center;
+  box-shadow: var(--el-box-shadow);
   .back-icon {
     width: 40px;
     height: 40px;
