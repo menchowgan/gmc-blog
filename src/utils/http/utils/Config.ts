@@ -14,6 +14,10 @@ const CONFIG_METHODS: ConfigModel = {
     url: "/user/search-user-brief",
     method: "get"
   },
+  "GET_INFO": {
+    url: "/user/get",
+    method: "get"
+  },
   "HELLO": {
     url: "/hello",
     method: "post"

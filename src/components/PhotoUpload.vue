@@ -7,6 +7,7 @@
       list-type="picture-card"
       :disabled="cannotUpload"
       :on-preview="handlePictureCardPreview"
+      :before-remove="beforeRemove"
       :on-remove="handleRemove"
       :file-list="fileList"
     >
@@ -22,10 +23,12 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, watch, watchEffect } from "vue";
+import { nextTick, ref, watch, watchEffect, onActivated } from "vue";
 import { Plus } from "@element-plus/icons-vue";
-import { ElMessage, UploadProps, UploadUserFile } from "element-plus";
+import { ElMessage, UploadProps, UploadUserFile, ElMessageBox } from "element-plus";
 import { request } from "../utils/http";
+import { useUserInfoStore } from "@/store";
+import { UserModel } from "@/utils/interfaces";
 
 const props = defineProps({
   userid: {
@@ -49,23 +52,53 @@ const props = defineProps({
   },
 });
 
+const userStore = useUserInfoStore();
 const fileList = ref<UploadUserFile[]>([]);
 
 watchEffect(() => {
   fileList.value = props.photoList as UploadUserFile[];
 });
 
+onActivated(() => {
+  fileList.value = (userStore.userInfo as any).photos as UploadUserFile[];
+});
+
 const dialogImageUrl = ref<string>("");
 const dialogVisible = ref<boolean>(false);
 
-watch(() => props.curImgUrl, (curImgUrl) => {
-  if (curImgUrl) {
-    dialogImageUrl.value = curImgUrl;
-    nextTick(() => {
-      dialogVisible.value = true;
-    })
+watch(
+  () => props.curImgUrl,
+  (curImgUrl) => {
+    if (curImgUrl) {
+      dialogImageUrl.value = curImgUrl;
+      nextTick(() => {
+        dialogVisible.value = true;
+      });
+    }
   }
-});
+);
+
+const beforeRemove: UploadProps["beforeRemove"] = async (uploadFile, uploadFiles) => {
+  return await new Promise<boolean>((resolve, reject) => {
+    ElMessageBox.confirm("确定要删除这张图片吗?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+      center: true,
+      draggable: true,
+    })
+      .then(() => {
+        resolve(true);
+      })
+      .catch(() => {
+        ElMessage({
+          type: "info",
+          message: "已取消",
+        });
+        reject(false);
+      });
+  });
+};
 
 const handleRemove: UploadProps["onRemove"] = async (uploadFile, uploadFiles) => {
   console.log(uploadFile, uploadFiles);
@@ -118,7 +151,7 @@ const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: 9999;
     width: 100%;
     height: 100%;
     justify-content: center;

@@ -3,7 +3,14 @@
     <el-icon class="back-icon" @click="onBack"><arrow-left-bold /></el-icon>
     <div class="header flex column">
       <el-avatar :size="150" :src="circleUrl" />
-      <ArtText :height="30" :font-size="32" :art-font-size="40" :text="nickname" />
+      <ArtText
+        :height="30"
+        :font-size="32"
+        :art-font-size="40"
+        fontFamily='"Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif, STSong'
+        :deputyFontStyle="{color: 'white'}"
+        :text="nickname"
+      />
     </div>
     <div class="body flex row">
       <nav class="flex column">
@@ -21,16 +28,11 @@
           v-show="typeSelected === 'PERSONNAL_INFO_VIEW'"
           style="opacity: 0.8"
         />
-        <PersonnalInfoEdit
-          :userid="user.id"
-          v-show="typeSelected === 'PERSONNAL_INFO_EDIT'"
-          style="opacity: 0.8"
-        />
         <PhotoUpload
           :userid="user.id"
           :photoList="photoList"
           :curImgUrl="curImgUrl"
-          v-show="['PHOTO_EDIT', 'PHOTO_VIEW'].includes(typeSelected)"
+          v-show="['PHOTO_VIEW'].includes(typeSelected)"
           :cannot-upload="typeSelected === 'PHOTO_VIEW'"
           :title="typeSelected === 'PHOTO_VIEW' ? '查看' : '编辑'"
           style="opacity: 0.8"
@@ -50,12 +52,6 @@
           v-show="typeSelected === 'VIDEO_VIEW'"
           style="opacity: 0.8"
         />
-        <MusicUpload
-          :userid="user.id"
-          v-show="typeSelected === 'MUSIC_UPLOAD'"
-          @refresh="onRefresh"
-          style="opacity: 0.8"
-        />
       </div>
     </div>
   </div>
@@ -65,9 +61,7 @@
 import CollapseSelector from "@/components/CollapseSelector.vue";
 import PersonnalInfo from "@/components/PersonnalInfo.vue";
 import ArtText from "@/components/ArtText.vue";
-import PersonnalInfoEdit from "@/components/PersonnalInfoEdit.vue";
 import PhotoUpload from "@/components/PhotoUpload.vue";
-import MusicUpload from "@/components/MusicUpload.vue";
 import ArticleCardInCreation from "@/components/ArticleCardInCreation.vue";
 import MusicView from "@/components/MusicView.vue";
 import VideoView from "@/components/VideoView.vue";
@@ -105,14 +99,22 @@ const photoList = ref<PhotoModel[]>([]);
 
 const articleSimpleInfos = ref<Array<ArticleSimpleInfoModel>>([]);
 
-watchEffect(async () => {
-  if (route.params.type) {
-    const res = await request(
-      "ARTICLE_QUERY_BY_TYPE",
-      `${user.value.id}/${route.params.type}`
-    );
-    if (res.code === 200) {
-      articleSimpleInfos.value = res.data;
+watchEffect(async (onCleanup) => {
+  let expired = false;
+
+  onCleanup(() => {
+    expired = true;
+  });
+
+  if (!expired) {
+    if (route.params.type) {
+      const res = await request(
+        "ARTICLE_QUERY_BY_TYPE",
+        `${user.value.id}/${route.params.type}`
+      );
+      if (res.code === 200) {
+        articleSimpleInfos.value = res.data;
+      }
     }
   }
 });
@@ -138,12 +140,12 @@ const onRefresh = () => {
 
 onMounted(() => {
   init();
-  getData();
 });
 
 onActivated(() => {
   console.log("actived", user.value.id);
   init();
+  getData();
 });
 
 const init = () => {
@@ -170,19 +172,31 @@ const init = () => {
         typeSelected.value = "MUSIC_VIEW";
         cur.value = 3;
         break;
+      case "VIDEOS":
+        typeSelected.value = "VIDEO_VIEW";
+        cur.value = 4;
     }
   }
 };
 
 const onTypeChanged = (type: string) => {
   console.log("new type selected", type);
-  // if (type === "ARTICLE_EDIT" || type === "VIDEO_EDIT") {
-  //   router.push({
-  //     name: "ArticleEdit",
-  //   });
-  //   return;
-  // }
-  if (type) {
+  if (
+    [
+      "PERSONNAL_INFO_EDIT",
+      "ARTICLE_EDIT",
+      "PHOTO_EDIT",
+      "MUSIC_UPLOAD",
+      "VIDEO_EDIT",
+    ].includes(type)
+  ) {
+    router.push({
+      name: "Admin",
+      params: {
+        type,
+      },
+    });
+  } else {
     typeSelected.value = type;
   }
 };
@@ -191,43 +205,41 @@ const onBack = () => {
   router.go(-1);
 };
 
-const currentDate = ref<Date>(new Date());
-
 const circleUrl = ref<string>("");
 
 const options = [
   {
     title: "我的简介 About Me",
     opts: [
-      // { label: "编辑 Edit", value: "PERSONNAL_INFO_EDIT" },
+      { label: "编辑 Edit", value: "PERSONNAL_INFO_EDIT" },
       { label: "查看 View", value: "PERSONNAL_INFO_VIEW" },
     ],
   },
   {
     title: "趣文 Articles",
     opts: [
-      // { label: "编辑 Edit", value: "ARTICLE_EDIT" },
+      { label: "编辑 Edit", value: "ARTICLE_EDIT" },
       { label: "查看 View", value: "ARTICLE_VIEW" },
     ],
   },
   {
     title: "照片 Photos",
     opts: [
-      // { label: "编辑 Edit", value: "PHOTO_EDIT" },
+      { label: "编辑 Edit", value: "PHOTO_EDIT" },
       { label: "查看 View", value: "PHOTO_VIEW" },
     ],
   },
   {
     title: "音乐 Music",
     opts: [
-      // { label: "上传 Upload", value: "MUSIC_UPLOAD" },
+      { label: "上传 Upload", value: "MUSIC_UPLOAD" },
       { label: "查看 View", value: "MUSIC_VIEW" },
     ],
   },
   {
     title: "视频 Video",
     opts: [
-      // { label: "编辑 Edit", value: "VIDEO_EDIT" },
+      { label: "编辑 Edit", value: "VIDEO_EDIT" },
       { label: "查看 View", value: "VIDEO_VIEW" },
     ],
   },
@@ -267,7 +279,7 @@ const options = [
     justify-content: center;
     align-items: center;
     .el-avatar {
-      border: 10px solid #ccc;
+      border: 10px solid $theme-color;
       box-shadow: var(--el-box-shadow);
     }
   }
@@ -289,6 +301,7 @@ const options = [
       border-radius: 10px;
       box-shadow: var(--el-box-shadow-dark);
       background-image: url("../../assets/images/creaton_background.webp");
+      background-size: cover;
     }
   }
 }

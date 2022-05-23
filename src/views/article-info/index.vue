@@ -3,7 +3,14 @@
     <el-icon class="back-icon" @click="onBack"><arrow-left-bold /></el-icon>
     <div class="header flex column">
       <el-avatar :size="150" :src="circleUrl" />
-      <ArtText :height="30" :font-size="32" :art-font-size="40" :text="nickname" />
+      <ArtText
+        :height="30"
+        :font-size="32"
+        :art-font-size="40"
+        :text="nickname"
+        fontFamily='"Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif, STSong'
+        :deputyFontStyle="{ color: 'white' }"
+      />
     </div>
     <div class="body flex column">
       <p class="date-p">写于：{{ date }}</p>
@@ -14,7 +21,10 @@
         :defaultConfig="editorConfig"
         mode="default"
       />
-      <p class="copyright">-- 版权所有，如需转载，联系作者 - Copyright &copy; - {{new Date().getFullYear()}} --</p>
+      <p class="copyright">
+        -- 版权所有，如需转载，联系作者 - Copyright &copy; -
+        {{ new Date().getFullYear() }} --
+      </p>
     </div>
   </div>
 </template>
@@ -22,7 +32,7 @@
 <script setup lang="ts">
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 
-import { dateFormat } from "../../utils/dateFormat"
+import { dateFormat } from "../../utils/dateFormat";
 import ArtText from "@/components/ArtText.vue";
 import { Editor } from "@wangeditor/editor-for-vue";
 import { IEditorConfig } from "@wangeditor/core";
@@ -35,25 +45,32 @@ const router = useRouter();
 const route = useRoute();
 const userStore = useUserInfoStore();
 const valueHtml = ref("<p> 无内容 </p>");
-const date = ref<string>("")
+const date = ref<string>("");
 
 const nickname = ref<string>((userStore.userInfo as UserModel)?.nickname as string);
 const circleUrl = ref<string>((userStore.userInfo as UserModel)?.avatar as string);
 
 const editorConfig: Partial<IEditorConfig> = {
-  readOnly: true
+  readOnly: true,
 };
 
-watchEffect(async () => {
-  if (route.params.articleId) {
-    console.log("article id: ", route.params.articleId);
-    const res = await request("ARTICLE_QUERY", route.params.articleId);
-    if (res.code === 200) {
-      valueHtml.value = res?.data?.content;
-      date.value = dateFormat("yyyy-MM-dd hh:mm:ss", new Date(res?.data?.date))
+watchEffect(async (onCleanup) => {
+  let expired = false;
+  onCleanup(() => {
+    expired = true;
+  });
+
+  if (!expired) {
+    if (route.params.articleId) {
+      console.log("article id: ", route.params.articleId);
+      const res = await request("ARTICLE_QUERY", route.params.articleId);
+      if (res.code === 200) {
+        valueHtml.value = res?.data?.content;
+        date.value = dateFormat("yyyy-MM-dd hh:mm:ss", new Date(res?.data?.date));
+      }
     }
   }
-})
+});
 
 const onBack = () => {
   router.go(-1);
@@ -91,7 +108,7 @@ const onBack = () => {
     justify-content: center;
     align-items: center;
     .el-avatar {
-      border: 10px solid #ccc;
+      border: 10px solid $theme-color;
       box-shadow: var(--el-box-shadow);
     }
   }
@@ -108,11 +125,14 @@ const onBack = () => {
     border-radius: 20px;
     .date-p {
       font-weight: bold;
-      font-size: 2.0vh;
-      margin-top: 10px; 
+      font-size: 2vh;
+      margin-top: 10px;
       margin-bottom: 2px;
       margin-left: 20px;
       color: #ccc;
+      &:hover {
+        @include hover-style;
+      }
     }
     .editor {
       border: 1px solid #eee;
@@ -120,7 +140,7 @@ const onBack = () => {
     .copyright {
       color: #ccc;
       &:hover {
-        color: $theme-color
+        color: $theme-color;
       }
     }
   }

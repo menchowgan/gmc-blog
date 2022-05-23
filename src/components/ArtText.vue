@@ -28,6 +28,9 @@ const props = defineProps({
     type: Number,
     default: 70,
   },
+  fontFamily: {
+    type: String
+  },
   color: {
     type: String,
     default: "#ccc",
@@ -48,6 +51,7 @@ const styleList = computed(() => ({
   width: props.width + "%",
   height: props.height + "px",
   "font-size": props.fontSize + "px",
+  fontFamily: props.fontFamily,
   color: props.color,
 }));
 

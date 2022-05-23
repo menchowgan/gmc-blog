@@ -50,7 +50,7 @@ const content = (content: string): string => {
 @import "../style/theme.scss";
 @import "../style/flex-style.scss";
 .article-card {
-  width: 98%;
+  width: 99%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -100,8 +100,7 @@ const content = (content: string): string => {
         }
         .button {
           flex: 1;
-          padding: 0;
-          min-height: auto;
+          color: $theme-color;
         }
       }
     }

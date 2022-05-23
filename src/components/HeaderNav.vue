@@ -42,12 +42,15 @@ const selectedType = (type: string) => {
 @import "../style/theme.scss";
 
 .header-nav {
-  width: 100%;
+  width: 99%;
   height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  z-index: 0;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid $theme-color;
+  box-shadow: var(--el-box-shadow);
   p {
     height: 100%;
     flex: 1;
@@ -57,6 +60,7 @@ const selectedType = (type: string) => {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    border-radius: 10px;
     &:hover {
       background-color: $theme-color;
       color: #6e6e6e;

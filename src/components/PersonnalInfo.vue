@@ -1,9 +1,9 @@
 <template>
   <div class="personnal-info-container flex row">
-    <el-avatar shape="square" :size="250" :src="user.avatar" />
+    <el-avatar shape="square" :size="250" :src="user.avatar" fit="cover" />
     <div class="content flex column">
       <div class="item flex row"><span>昵称：</span> {{ user.nickname }}</div>
-      <div class="item flex row"><span>相别：</span> {{ gender }}</div>
+      <div class="item flex row"><span>性别：</span> {{ gender }}</div>
       <div class="item flex row">
         <span>兴趣：</span>
         <el-tag
@@ -58,18 +58,18 @@ const hobbies = computed(() => {
 @import "../style/theme.scss";
 .personnal-info-container {
   width: 99%;
-  margin-top: 15px;
+  margin-top: 5px;
+  padding-bottom: 1vh;
   justify-content: flex-start;
   align-items: flex-start;
   background-color: $view-color;
   border-radius: 10px;
   box-shadow: var(--el-box-shadow);
   .el-avatar {
-    width: 20%;
-    margin: 10px;
-    margin-top: 20px;
+    margin: 20px;
     border-radius: 10px;
-    border: 5px solid #ccc;
+    border: 5px solid $theme-color;
+    box-shadow: var(--el-box-shadow);
   }
   .content {
     width: 80%;
@@ -109,7 +109,7 @@ const hobbies = computed(() => {
       }
       p {
         width: 70%;
-        margin-right: 30px;
+        margin-top: 0px;
         word-break: break-all;
         text-overflow: clip;
         text-align: left;

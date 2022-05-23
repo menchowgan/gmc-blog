@@ -1,13 +1,11 @@
 <template>
-  <div class="content-container">
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <keep-alive :max="4">
-          <component :is="Component" />
-        </keep-alive>
-      </transition>
-    </router-view>
-  </div>
+  <router-view v-slot="{ Component }">
+    <transition name="fade" mode="out-in">
+      <keep-alive :max="4">
+        <component :is="Component" />
+      </keep-alive>
+    </transition>
+  </router-view>
 </template>
 
 <style lang="scss">
@@ -16,16 +14,8 @@ body {
   margin: 0;
   border: 0;
   background-image: url("./assets/images/background.webp");
+  background-size:cover;
   background-attachment: fixed;
-}
-
-.content-container {
-  padding: 0;
-  border: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 #app {
