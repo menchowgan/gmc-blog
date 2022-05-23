@@ -1,5 +1,6 @@
 import axios from "axios"
 import { App } from "vue";
+import { GMessage } from '@/plugins';
 
 const instance = axios.create({
   timeout: 1500,
@@ -20,7 +21,9 @@ const Axios = {
       error => {
         console.log("请求错误");
         // Do something with request error
-        appProps.$message.error("请求错误");
+        GMessage("请求错误", {
+          type: "error"
+        })
         return Promise.reject(error);
       });
 
@@ -35,7 +38,9 @@ const Axios = {
       error => {
         console.log("请求错误");
         console.log(error);
-        appProps.$message.error(error.response.data.message || "请求错误");
+        GMessage(error.response.data.message || "请求错误", {
+          type: "error"
+        })
         // Do something with response error
         return Promise.reject(error);
       });

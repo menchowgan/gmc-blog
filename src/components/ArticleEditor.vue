@@ -79,7 +79,6 @@ const options: OptModel = [
 const typeSelected = ref<Array<string>>([]);
 
 const userStore = useUserInfoStore();
-const activeName = ref<string>("create article");
 
 const article = ref<ArticleSimpleInfoModel>({});
 

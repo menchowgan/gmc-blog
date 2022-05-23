@@ -2,7 +2,11 @@
   <div class="Home flex column">
     <div class="header">
       <div class="nav">
-        <ArtText :text="user.nickname" />
+        <ArtText
+          :text="user.nickname"
+          fontFamily="'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"
+          :deputyFontStyle="{color: 'white'}"
+        />
         <div style="width: 100%; height: 100px">
           <HeaderNav @type-selected="onNavTypeSelected" />
         </div>
@@ -31,10 +35,12 @@
             :width="40"
             :height="100"
             :fontSize="50"
+            fontFamily="'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"
             :artFontSize="55"
+            :deputyFontStyle="{color: 'white'}"
             artColor="#3fc7f5"
             color="#ccc"
-            text="MY -Photo"
+            text="MY -Photos"
           />
           <Carousel
             :photos="photos"
@@ -54,13 +60,15 @@ import CollapseSelector from "@/components/CollapseSelector.vue";
 import Carousel from "@/components/Carousel.vue";
 import HeaderNav from "@/components/HeaderNav.vue";
 import ArtText from "@/components/ArtText.vue";
-import { ref, computed } from "vue";
+import { ref, computed, onActivated, h, createVNode } from "vue";
 import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
 import { request } from "../utils/http/index";
 import { useUserInfoStore } from "../store";
+import { GMessage } from "@/plugins";
 
 const user = ref<UserModel>({});
+const userStore = useUserInfoStore();
 
 const photos = computed(() => {
   let ps: PhotoModel[] = [];
@@ -74,29 +82,60 @@ const photos = computed(() => {
   return ps;
 });
 
+const getUserTitle = (nickname: string) => {
+  const ns = nickname?.split(/\s+/);
+  return h(
+    "span",
+    {
+      style: {
+        fontSize: "3.6vh",
+        fontFamily: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
+      },
+    },
+    [
+      h("span", "欢迎进入 "),
+      h(
+        "span",
+        ns.map((n, index) => {
+          if (ns.length === 1 || index < ns.length - 1) {
+            return h("span", n);
+          }
+          return h(
+            "span",
+            {
+              style: {
+                color: "#eee",
+              },
+            },
+            ` ${n}`
+          );
+        })
+      ),
+      h("span", " 的主页"),
+    ]
+  );
+};
+
 const init = async () => {
-  try {
-    const userStore = useUserInfoStore();
-    const usertemp: UserModel = userStore.userInfo;
-    if (usertemp && (usertemp.id as number) > 0) {
-      user.value = usertemp;
-      return;
-    }
-    const res = await request("GET_USER_SIMPLE_INFO", 12);
-    console.log("res", res);
-    if (res && res.data) {
-      user.value = res?.data;
-      userStore.userInfo = user.value;
-    }
-    console.log("user store", userStore.userInfo);
-  } catch (e) {}
+  await userStore.getUserInfo();
+  user.value = userStore.userInfo;
+  console.log("user store", user.value);
+  if (user.value.id) {
+    GMessage(getUserTitle(user.value.nickname as string), {
+      type: "success",
+      timeout: 4000
+    });
+  }
 };
 
 init();
 
-const router = useRouter();
+onActivated(() => {
+  user.value = userStore.userInfo;
+  console.log("user store", user.value);
+});
 
-const currentDate = ref<Date>(new Date());
+const router = useRouter();
 
 const options = [
   {
@@ -118,6 +157,7 @@ const options = [
     opts: [
       { label: "音乐分享 Music Sharing", value: "MUSIC_SHARE" },
       { label: "游戏趣谈 Game Gossip", value: "GAME_GOSSIP" },
+      { label: "视频记录 Video Record", value: "VIDEOS" },
     ],
   },
 ];
@@ -125,9 +165,19 @@ const options = [
 const onTypeChanged = async (type: string) => {
   console.log("new type selected", type);
   if (type) {
-    const res = await request("ARTICLE_QUERY_BY_TYPE", `${user.value.id}/${type}`);
-    if (res.code === 200) {
-      user.value.articleSimpleInfos = res.data;
+    if (type === "VIDEOS") {
+      router.push({
+        name: "Creation",
+        params: {
+          type,
+        },
+      });
+      return;
+    } else {
+      const res = await request("ARTICLE_QUERY_BY_TYPE", `${user.value.id}/${type}`);
+      if (res.code === 200) {
+        user.value.articleSimpleInfos = res.data;
+      }
     }
   }
 };
@@ -157,7 +207,7 @@ const toPhotos = (photo: PhotoModel) => {
     name: "Creation",
     params: {
       type: "PHOTOS_VIEW",
-      curImgUrl: photo.url
+      curImgUrl: photo.url,
     },
   });
 };
@@ -205,16 +255,8 @@ const toPhotos = (photo: PhotoModel) => {
       height: 360px;
       display: flex;
       flex-direction: column;
+      justify-content: flex-end;
       align-items: flex-start;
-      .art-title {
-        section {
-          font-size: 68px;
-          color: $theme-color;
-        }
-        &:hover {
-          animation: text-scale 0.8s;
-        }
-      }
     }
     .avator {
       float: right;
@@ -226,7 +268,7 @@ const toPhotos = (photo: PhotoModel) => {
       align-items: center;
       .el-avatar {
         margin-right: 128px;
-        border: 10px solid #ccc;
+        border: 10px solid $theme-color;
         box-shadow: var(--el-box-shadow);
         cursor: pointer;
       }

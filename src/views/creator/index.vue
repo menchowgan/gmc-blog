@@ -1,6 +1,5 @@
 <template>
   <div class="article-edit-cmp flex column">
-    <el-icon class="back-icon" @click="onBack"><arrow-left-bold /></el-icon>
     <div class="header flex column">
       <el-avatar :size="150" :src="circleUrl" />
       <ArtText :height="30" :font-size="32" :art-font-size="40" :text="nickname" />
@@ -17,18 +16,16 @@ import Creator from "@/components/Creator.vue";
 import { ref, onMounted } from "vue";
 import { useUserInfoStore } from "@/store";
 import { UserModel } from "@/utils/interfaces";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 const userStore = useUserInfoStore();
-const router = useRouter();
+const route = useRoute();
+
+console.log("route info: ", route);
 
 const circleUrl = ref<string>("");
 const nickname = ref<string>("");
 
 const html = ref<string>("");
-
-const onBack = () => {
-  router.go(-1);
-};
 
 onMounted(() => {
   nickname.value = (userStore.userInfo as UserModel).nickname as string;
@@ -47,22 +44,6 @@ const onElementType = (ele: string) => {
   width: 100%;
   justify-content: center;
   align-items: center;
-  .back-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    border: 2px solid $theme-color;
-    color: $theme-color;
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    box-shadow: var(--el-box-shadow);
-    &:hover {
-      border: 2px solid #ccc;
-      color: #ccc;
-      cursor: pointer;
-    }
-  }
   .header {
     width: 80%;
     height: 350px;

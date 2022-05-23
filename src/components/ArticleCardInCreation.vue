@@ -97,6 +97,7 @@ const toArticleInfo = (id: number) => {
       }
       .button {
         flex: 1;
+        color: $theme-color;
       }
     }
   }

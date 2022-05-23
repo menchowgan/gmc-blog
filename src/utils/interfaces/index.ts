@@ -20,6 +20,7 @@ interface UserModel {
   avatar?: string
   photos?: Array<PhotoModel>
   audios?: Array<MusicModel>
+  videos?: Array<VideoModel>
   articleSimpleInfos?: Array<ArticleSimpleInfoModel>
 }
 
@@ -39,9 +40,21 @@ interface MusicModel {
   paused?: boolean
 }
 
+interface VideoModel {
+  id?: number
+  userId?: string
+  avatar?: string
+  videoUrl?: string
+  title?: string
+  artist?: string
+  evalution?: string
+  paused?: boolean
+}
+
 export {
   ArticleSimpleInfoModel,
   UserModel,
   PhotoModel,
-  MusicModel
+  MusicModel,
+  VideoModel
 }

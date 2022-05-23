@@ -10,16 +10,13 @@ const routes: Array<RouteRecordRaw> = [
     name: "ArticleInfo",
     component: () => import("../views/article-info/index.vue")
   }, {
-    path: "/article-edit",
-    name: "ArticleEdit",
-    component: () => import("../views/article-edit/index.vue")
+    path: "/admin",
+    name: "Admin",
+    component: () => import("../views/admin/index.vue")
   }, {
     path: "/creation",
     name: "Creation",
     component: () => import("../views/creation/index.vue")
-  }, {
-    path: "/admin",
-    redirect: "/article-edit"
   }
 ]
 

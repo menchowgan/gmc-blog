@@ -14,6 +14,10 @@ const CONFIG_METHODS: ConfigModel = {
     url: "/user/search-user-brief",
     method: "get"
   },
+  "GET_INFO": {
+    url: "/user/get",
+    method: "get"
+  },
   "HELLO": {
     url: "/hello",
     method: "post"
@@ -61,6 +65,10 @@ const CONFIG_METHODS: ConfigModel = {
   "ARTICLE_QUERY_BY_TYPE": {
     url: "/article/query-by-type",
     method: "get"
+  },
+  "VIDEO_USER_UPLOAD": {
+    url: "/video/user/upload",
+    method: "post"
   },
 }
 

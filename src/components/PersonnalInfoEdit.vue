@@ -49,6 +49,13 @@
           <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
         </el-upload>
       </el-form-item>
+      <el-form-item label="是否新增用户">
+        <el-switch
+          v-model="isAdd"
+          class="ml-2"
+          active-color="#3fc7f5"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">创建</el-button>
         <el-button>取消</el-button>
@@ -58,15 +65,15 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "@vue/reactivity";
+import { reactive, ref, watchEffect, onActivated } from "vue";
 import { nextTick } from "@vue/runtime-core";
-import { UserModel, MusicModel } from "../utils/interfaces/index";
+import { UserModel } from "../utils/interfaces/index";
 import type { ElInput } from "element-plus";
 import type { UploadProps } from "element-plus";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
-
 import { request } from "../utils/http/index";
+import { useUserInfoStore } from "@/store";
 
 defineProps({
   userid: {
@@ -74,6 +81,7 @@ defineProps({
   },
 });
 
+const userStore = useUserInfoStore()
 const InputRef = ref<InstanceType<typeof ElInput>>();
 
 const hobbies = ref<string[]>([]);
@@ -86,9 +94,32 @@ const form = reactive<UserModel>({
   brief: "",
 });
 
-const musicForm = reactive<MusicModel>({
-  avatar: "",
-  audioUrl: ""
+const isAdd = ref<boolean>(false)
+watchEffect(() => {
+  if (!isAdd.value) {
+    form.id = (userStore.userInfo as UserModel).id
+    console.log("is update", form.id);
+  } else {
+    form.id = undefined
+  }
+})
+
+onActivated(async () => {
+  const res = await request("GET_INFO", 12)
+  console.log("get info: ", res);
+  if (res.code === 200) {
+    form.id = res.data.id
+    form.nickname = res.data.nickname
+    form.gender = res.data.gender
+    form.hobbies = res.data.hobbies
+    if (form.hobbies) {
+      hobbies.value = res.data.hobbies.split(",")
+    }
+    let avatarPath = res.data.avatar?.split("/") as Array<string>
+    form.avatar = avatarPath[avatarPath?.length - 1] as string
+    imageUrl.value = res.data.avatar
+    form.brief = res.data.brief
+  }
 })
 
 const inputValue = ref("");
@@ -123,6 +154,8 @@ const onSubmit = async () => {
     });
     console.log("user info post", res);
     if (res.code === 0) {
+      const userStore = useUserInfoStore()
+      userStore.getUserInfo()
       ElMessage.success("用户信息上传成功");
     }
   } catch (e) {}

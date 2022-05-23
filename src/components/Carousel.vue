@@ -4,6 +4,7 @@
       v-for="item in (photos as Array<PhotoModel>)"
       :key="item.id"
       :src="item.url"
+      fit="cover"
       @click="() => toPhotos({url: item.url, id: item.id})"
     />
   </div>
