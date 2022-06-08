@@ -2,10 +2,10 @@
   <div class="music-info-edit">
     <el-form :model="musicForm" label-width="120px">
       <el-form-item label="歌名">
-        <el-input v-model="musicForm.title" />
+        <el-input v-model="title" />
       </el-form-item>
       <el-form-item label="艺术家">
-        <el-input v-model="musicForm.artist" />
+        <el-input v-model="artist" />
       </el-form-item>
       <el-form-item label="音乐">
         <el-upload
@@ -29,7 +29,7 @@
         </el-upload>
       </el-form-item>
       <el-form-item label="评价">
-        <el-input v-model="musicForm.evalution" type="textarea" />
+        <el-input v-model="evalution" type="textarea" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onMusicSubmit">创建</el-button>
@@ -40,13 +40,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "@vue/reactivity";
+import { reactive, ref, toRefs } from "vue";
 import { MusicModel } from "../utils/interfaces/index";
 import type { UploadProps } from "element-plus";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
-
-import { request } from "../utils/http/index";
+import { MusicManager } from "@/utils/managers";
 
 const props = defineProps({
   userid: {
@@ -64,7 +63,11 @@ const musicForm = reactive<MusicModel>({
   evalution: "太好听了！",
 });
 
-const emits = defineEmits(["refresh"])
+const { title, artist, evalution } = toRefs(musicForm)
+
+const musicManager = new MusicManager();
+
+const emits = defineEmits(["refresh"]);
 
 const handleCoverSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
   coverUrl.value = URL.createObjectURL(uploadFile.raw!);
@@ -89,17 +92,14 @@ const handleMusicSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
 
 const onMusicSubmit = async () => {
   console.log("music form data", { ...musicForm });
-  try {
-    const res = await request("MUSIC_USER_UPLOAD", {
-      userId: props.userid,
-      ...musicForm,
-    });
-    console.log("user music info post", res);
-    if (res.code === 0) {
-      ElMessage.success("歌曲音频上传成功");
-      emits("refresh")
-    }
-  } catch (e) {}
+  const success = await musicManager.musicInfoUpload({
+    userId: props.userid,
+    ...musicForm,
+  });
+  if (success) {
+    ElMessage.success("歌曲音频上传成功");
+    emits("refresh");
+  }
 };
 </script>
 

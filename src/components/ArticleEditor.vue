@@ -38,7 +38,7 @@
     />
     <Editor
       class="editor"
-      style="height: 500px; overflow-y: hidden"
+      style="height: 900px; overflow-y: hidden"
       v-model="valueHtml"
       :defaultConfig="editorConfig"
       :mode="mode"
@@ -56,14 +56,17 @@
 <script setup lang="ts">
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 
-import { onBeforeUnmount, ref, shallowRef, onMounted } from "vue";
+import { onBeforeUnmount, ref, shallowRef, onMounted, onActivated } from "vue";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { IEditorConfig } from "@wangeditor/core";
 import { useUserInfoStore } from "@/store";
 import { UserModel, ArticleSimpleInfoModel } from "../utils/interfaces/index";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import type { UploadProps } from "element-plus";
-import { request } from "../utils/http/index";
+import { ArticleManager } from "@/utils/managers";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 
 type OptModel = Array<{ label: string; value: string }>;
 
@@ -76,44 +79,92 @@ const options: OptModel = [
   { label: "游戏趣谈 Game Gossip", value: "GAME_GOSSIP" },
 ];
 
+const articleManager = new ArticleManager();
+
 const typeSelected = ref<Array<string>>([]);
-
 const userStore = useUserInfoStore();
-
 const article = ref<ArticleSimpleInfoModel>({});
-
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef();
-
 const userid = ref<number>((userStore.userInfo as UserModel)?.id as number);
 const mode = ref<string>("default");
 const imageUrl = ref<string>("");
-
 // 内容 HTML
-const valueHtml = ref("<p>hello</p>");
+const valueHtml = ref("<p> 无内容 </p>");
 
-const onSubmit = async () => {
-  console.log("editor value: ", valueHtml.value, article);
-  article.value.type = typeSelected.value?.join(";");
-  article.value.content = valueHtml.value;
-  article.value.userId = userid.value;
-
-  const res = await request("ARTICLE_UPLOAD", {
-    ...article.value,
-  });
-  if (res.code === 0) {
-    ElMessage.success("更新成功");
-  } else {
-    ElMessage.error(res.message);
-  }
+const onSubmit = () => {
+  ElMessageBox.confirm("确定要提交这次修改吗?", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+    center: true,
+    draggable: true,
+  })
+    .then(async () => {
+      article.value.type = typeSelected.value?.join(";");
+      article.value.content = valueHtml.value;
+      article.value.userId = userid.value;
+      if (article.value.imgUrl?.startsWith("http")) {
+        let imgUrl = (article.value.imgUrl as string).split("/");
+        article.value.imgUrl = imgUrl[imgUrl.length - 1];
+      }
+      console.log("editor value: ", valueHtml.value, article);
+      const success = await articleManager.articleUpload({ ...article.value });
+      if (success) {
+        ElMessage.success("更新成功");
+      }
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "已取消",
+      });
+    });
 };
 
 const onCancel = () => {
-  article.value = {};
+  ElMessageBox.confirm("确定要取消这次修改吗?", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+    center: true,
+    draggable: true,
+  })
+    .then(() => {
+      article.value = {};
+      typeSelected.value = [];
+      valueHtml.value = "<p> 无内容 </p>";
+      imageUrl.value = "";
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "已取消",
+      });
+    });
 };
 
 // 模拟 ajax 异步获取内容
 onMounted(() => {});
+
+onActivated(async () => {
+  if (route.params.articleId && Number(route.params.articleId) > 0) {
+    const data = await articleManager.queryById(route.params.articleId as string);
+    if (data) {
+      imageUrl.value = data.imgUrl as string;
+      valueHtml.value = data.content as string;
+      article.value.id = data.id;
+      article.value.brief = data.brief;
+      article.value.title = data.title;
+      article.value.created_at = data.created_at;
+      if (data.imgUrl) {
+        let url = data.imgUrl.split("/");
+        article.value.imgUrl = data.imgUrl ? url[url.length - 1] : "";
+      }
+      typeSelected.value = data.type?.split(";") as string[];
+    }
+  }
+});
 
 const toolbarConfig = {};
 const editorConfig: Partial<IEditorConfig> = {

@@ -1,5 +1,6 @@
 <template>
   <div class="music-view flex column">
+    <NoData v-if="length === 0" />
     <el-card
       shadow="hover"
       class="card flex row"
@@ -39,12 +40,19 @@
 import { ref, watchEffect } from "vue";
 import MusicPlayer from "@/components/MusicPlayer.vue";
 import {MusicModel} from "../utils/interfaces/index"
+import NoData from "./common/NoData.vue";
 
 const props = defineProps({
   audios: {
     type: Array,
     default: () => []
   }
+})
+
+const length = ref<number>(0)
+
+watchEffect(() => {
+  length.value = props.audios?.length || 0
 })
 
 const musicInfos = ref<MusicModel[]>([]);

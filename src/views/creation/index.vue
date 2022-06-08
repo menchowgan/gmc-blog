@@ -8,7 +8,7 @@
         :font-size="32"
         :art-font-size="40"
         fontFamily='"Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif, STSong'
-        :deputyFontStyle="{color: 'white'}"
+        :deputyFontStyle="{ color: 'white' }"
         :text="nickname"
       />
     </div>
@@ -65,7 +65,7 @@ import PhotoUpload from "@/components/PhotoUpload.vue";
 import ArticleCardInCreation from "@/components/ArticleCardInCreation.vue";
 import MusicView from "@/components/MusicView.vue";
 import VideoView from "@/components/VideoView.vue";
-import { computed, ref, watchEffect } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   ArticleSimpleInfoModel,
@@ -73,8 +73,11 @@ import {
   UserModel,
 } from "../../utils/interfaces/index";
 import { onActivated, onMounted } from "vue";
-import { request } from "../../utils/http/index";
 import { useUserInfoStore } from "@/store";
+import { ArticleManager, UserManager } from "@/utils/managers";
+import { Loading } from "@/plugins";
+const articleManager = new ArticleManager();
+const userManager = new UserManager();
 
 const nickname = ref<string>("Menchow GAN");
 const router = useRouter();
@@ -82,8 +85,12 @@ const route = useRoute();
 const userStore = useUserInfoStore();
 
 const typeSelected = ref<string>("");
-
 const cur = ref<number>(-1);
+const user = ref<UserModel>({});
+
+const photoList = ref<PhotoModel[]>([]);
+const articleSimpleInfos = ref<Array<ArticleSimpleInfoModel>>([]);
+
 const curImgUrl = computed(() => {
   if (route.params.curImgUrl) {
     return route.params.curImgUrl as string;
@@ -91,46 +98,43 @@ const curImgUrl = computed(() => {
   return "";
 });
 
-const user = ref<UserModel>({});
-
 user.value.id = (userStore.userInfo as UserModel)?.id;
 
-const photoList = ref<PhotoModel[]>([]);
+watch(
+  () => route.params.type,
+  async (newVal, oldVal, onCleanup) => {
+    let expired = false;
 
-const articleSimpleInfos = ref<Array<ArticleSimpleInfoModel>>([]);
+    onCleanup(() => {
+      expired = true;
+    });
 
-watchEffect(async (onCleanup) => {
-  let expired = false;
-
-  onCleanup(() => {
-    expired = true;
-  });
-
-  if (!expired) {
-    if (route.params.type) {
-      const res = await request(
-        "ARTICLE_QUERY_BY_TYPE",
-        `${user.value.id}/${route.params.type}`
-      );
-      if (res.code === 200) {
-        articleSimpleInfos.value = res.data;
+    if (!expired) {
+      if (newVal) {
+        Loading(true);
+        const info = await articleManager.queryByType(
+          user.value.id as number,
+          newVal as string
+        );
+        articleSimpleInfos.value = info;
+        Loading(false);
       }
     }
+  },
+  {
+    immediate: true,
   }
-});
+);
 
 const getData = async () => {
   if ((userStore.userInfo as UserModel).id) {
     photoList.value = (userStore.userInfo as UserModel).photos || [];
-    try {
-      let id = (userStore.userInfo as UserModel).id;
-      const res = await request("SEARCH_USER_BRIEF", id);
-      if (res && res.data) {
-        console.log("res", res);
-        user.value = res.data;
-        user.value.audios?.forEach((audio) => (audio.paused = true));
-      }
-    } catch (e) {}
+    let id = (userStore.userInfo as UserModel).id;
+    const info = await userManager.searchById(id as number);
+    if (info) {
+      user.value = info;
+      user.value.audios?.forEach((audio) => (audio.paused = true));
+    }
   }
 };
 

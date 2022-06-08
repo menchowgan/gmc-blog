@@ -2,10 +2,10 @@
   <div class="video-info-edit">
     <el-form :model="videoForm" label-width="120px">
       <el-form-item label="名称">
-        <el-input v-model="videoForm.title" />
+        <el-input v-model="title" />
       </el-form-item>
       <el-form-item label="创建者">
-        <el-input v-model="videoForm.artist" />
+        <el-input v-model="artist" />
       </el-form-item>
       <el-form-item label="视频">
         <el-upload
@@ -29,7 +29,7 @@
         </el-upload>
       </el-form-item>
       <el-form-item label="评价">
-        <el-input v-model="videoForm.evalution" type="textarea" />
+        <el-input v-model="evalution" type="textarea" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onVideoSubmit">创建</el-button>
@@ -40,20 +40,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "@vue/reactivity";
+import { reactive, ref, toRefs } from "@vue/reactivity";
 import { UserModel, VideoModel } from "../utils/interfaces/index";
 import type { UploadProps } from "element-plus";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
-
-import { request } from "../utils/http/index";
 import { useUserInfoStore } from "@/store";
+import { VideoManager } from "@/utils/managers";
 
-const userStore = useUserInfoStore()
+const userStore = useUserInfoStore();
 const userid = ref<number>((userStore.userInfo as UserModel)?.id as number);
-
 const coverUrl = ref<string>("");
-
 const videoForm = reactive<VideoModel>({
   title: "",
   avatar: "",
@@ -62,7 +59,11 @@ const videoForm = reactive<VideoModel>({
   evalution: "太有意思了！",
 });
 
-const emits = defineEmits(["refresh"])
+const { title, artist, evalution } = toRefs(videoForm)
+
+const emits = defineEmits(["refresh"]);
+
+const videoManager = new VideoManager();
 
 const handleCoverSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
   coverUrl.value = URL.createObjectURL(uploadFile.raw!);
@@ -87,17 +88,14 @@ const handleVideoSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
 
 const onVideoSubmit = async () => {
   console.log("video form data", { ...videoForm });
-  try {
-    const res = await request("VIDEO_USER_UPLOAD", {
-      userId: userid.value,
-      ...videoForm,
-    });
-    console.log("user video info post", res);
-    if (res.code === 0) {
-      ElMessage.success("视频上传成功");
-      emits("refresh")
-    }
-  } catch (e) {}
+  const success = await videoManager.uploadUserVideo({
+    userId: userid.value,
+    ...videoForm,
+  });
+  if (success) {
+    ElMessage.success("视频上传成功");
+    emits("refresh");
+  }
 };
 </script>
 

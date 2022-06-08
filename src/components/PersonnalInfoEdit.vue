@@ -2,10 +2,10 @@
   <div class="personnal-info-edit">
     <el-form :model="form" label-width="120px">
       <el-form-item label="昵称">
-        <el-input v-model="form.nickname" />
+        <el-input v-model="nickname" />
       </el-form-item>
       <el-form-item label="性别">
-        <el-select v-model="form.gender" placeholder="">
+        <el-select v-model="gender" placeholder="">
           <el-option label="男" value="m" />
           <el-option label="女" value="f" />
         </el-select>
@@ -35,7 +35,7 @@
         </el-button>
       </el-form-item>
       <el-form-item label="简介">
-        <el-input v-model="form.brief" type="textarea" />
+        <el-input v-model="brief" type="textarea" />
       </el-form-item>
       <el-form-item label="头像">
         <el-upload
@@ -50,11 +50,7 @@
         </el-upload>
       </el-form-item>
       <el-form-item label="是否新增用户">
-        <el-switch
-          v-model="isAdd"
-          class="ml-2"
-          active-color="#3fc7f5"
-        />
+        <el-switch v-model="isAdd" class="ml-2" active-color="#3fc7f5" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">创建</el-button>
@@ -65,15 +61,15 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watchEffect, onActivated } from "vue";
+import { reactive, ref, watchEffect, onActivated, toRefs } from "vue";
 import { nextTick } from "@vue/runtime-core";
 import { UserModel } from "../utils/interfaces/index";
 import type { ElInput } from "element-plus";
 import type { UploadProps } from "element-plus";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
-import { request } from "../utils/http/index";
 import { useUserInfoStore } from "@/store";
+import { UserManager } from "@/utils/managers";
 
 defineProps({
   userid: {
@@ -81,9 +77,8 @@ defineProps({
   },
 });
 
-const userStore = useUserInfoStore()
+const userStore = useUserInfoStore();
 const InputRef = ref<InstanceType<typeof ElInput>>();
-
 const hobbies = ref<string[]>([]);
 
 const form = reactive<UserModel>({
@@ -94,38 +89,40 @@ const form = reactive<UserModel>({
   brief: "",
 });
 
-const isAdd = ref<boolean>(false)
-watchEffect(() => {
-  if (!isAdd.value) {
-    form.id = (userStore.userInfo as UserModel).id
-    console.log("is update", form.id);
-  } else {
-    form.id = undefined
-  }
-})
+const { nickname, gender, brief } = toRefs(form);
 
-onActivated(async () => {
-  const res = await request("GET_INFO", 12)
-  console.log("get info: ", res);
-  if (res.code === 200) {
-    form.id = res.data.id
-    form.nickname = res.data.nickname
-    form.gender = res.data.gender
-    form.hobbies = res.data.hobbies
-    if (form.hobbies) {
-      hobbies.value = res.data.hobbies.split(",")
-    }
-    let avatarPath = res.data.avatar?.split("/") as Array<string>
-    form.avatar = avatarPath[avatarPath?.length - 1] as string
-    imageUrl.value = res.data.avatar
-    form.brief = res.data.brief
-  }
-})
-
+const isAdd = ref<boolean>(false);
 const inputValue = ref("");
 const inputVisible = ref(false);
-
 const imageUrl = ref<string>("");
+
+const userManager = new UserManager();
+
+watchEffect(() => {
+  if (!isAdd.value) {
+    form.id = (userStore.userInfo as UserModel).id;
+    console.log("is update", form.id);
+  } else {
+    form.id = undefined;
+  }
+});
+
+onActivated(async () => {
+  const info = await userManager.getInfo(12);
+  if (info) {
+    form.id = info.id;
+    form.nickname = info.nickname;
+    form.gender = info.gender;
+    form.hobbies = info.hobbies;
+    if (form.hobbies) {
+      hobbies.value = form.hobbies.split(",");
+    }
+    let avatarPath = info.avatar?.split("/") as Array<string>;
+    form.avatar = avatarPath[avatarPath?.length - 1] as string;
+    imageUrl.value = info.avatar as string;
+    form.brief = info.brief;
+  }
+});
 
 const handleClose = (tag: string) => {
   hobbies.value.splice(hobbies.value.indexOf(tag), 1);
@@ -146,19 +143,14 @@ const showInput = () => {
 };
 
 const onSubmit = async () => {
-  console.log("form data", { ...form });
-  try {
-    form.hobbies = hobbies.value.join(",");
-    const res = await request("POST_USER_INFO", {
-      ...form,
-    });
-    console.log("user info post", res);
-    if (res.code === 0) {
-      const userStore = useUserInfoStore()
-      userStore.getUserInfo()
-      ElMessage.success("用户信息上传成功");
-    }
-  } catch (e) {}
+  console.log("form data", form);
+  form.hobbies = hobbies.value.join(",");
+  const success = await userManager.infoPost({ ...form });
+  if (success) {
+    const userStore = useUserInfoStore();
+    userStore.getUserInfo();
+    ElMessage.success("用户信息上传成功");
+  }
 };
 
 const handleAvatarSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
@@ -225,7 +217,7 @@ const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
   color: #8c939d;
   width: 178px;
   height: 178px;
-  margin-left: 10px;;
+  margin-left: 10px;
   text-align: center;
   border: 1px solid #ccc;
 }
