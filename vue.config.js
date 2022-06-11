@@ -2,10 +2,10 @@ require("events").EventEmitter.defaultMaxListeners = 0;
 
 module.exports = {
   lintOnSave: false,
-  publicPath: "./",
+  publicPath: "/admin-management",
   productionSourceMap: false,
   devServer: {
-    port: 8080,
+    port: 8088,
     proxy: {
       '/hello': {
         target: "http://127.0.0.1:8888",

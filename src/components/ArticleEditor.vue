@@ -65,6 +65,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import type { UploadProps } from "element-plus";
 import { ArticleManager } from "@/utils/managers";
 import { useRoute } from "vue-router";
+import { GMessage } from "@/plugins";
 
 const route = useRoute();
 
@@ -180,18 +181,70 @@ const editorConfig: Partial<IEditorConfig> = {
       onProgress(progress: number) {
         // progress 是 0-100 的数字
         console.log("progress", progress);
+        GMessage(`图片上传进度:${progress}%`, {
+          type: "success"
+        })
       },
       // 单个文件上传成功之后
       onSuccess(file: File, res: any) {
         console.log(`${file.name} 上传成功`, res);
+        GMessage(`上传成功:${file.name}`, {
+          type: "success"
+        })
       },
       // 单个文件上传失败
       onFailed(file: File, res: any) {
         console.log(`${file.name} 上传失败`, res);
+        GMessage(`${file.name} 上传失败`, {
+          type: "error"
+        })
       },
       // 上传错误，或者触发 timeout 超时
       onError(file: File, err: any, res: any) {
         console.log(`${file.name} 上传出错`, err, res);
+      },
+    },
+    uploadVideo: {
+      server: `/article/video/upload/${(userStore.userInfo as UserModel)?.id}`,
+      timeout: 15 * 1000,
+      maxFileSize: 5 * 1024 * 1024 * 1024,
+      // 上传之前触发
+      onBeforeUpload(file: any) {
+        // file 选中的文件，格式如 { key: file }
+        return file;
+
+        // 可以 return
+        // 1. return file 或者 new 一个 file ，接下来将上传
+        // 2. return false ，不上传这个 file
+      },
+      // 上传进度的回调函数
+      onProgress(progress: number) {
+        // progress 是 0-100 的数字
+        console.log("progress", progress);
+        GMessage(`图片上传进度:${progress}%`, {
+          type: "success"
+        })
+      },
+      // 单个文件上传成功之后
+      onSuccess(file: File, res: any) {
+        console.log(`${file.name} 上传成功`, res);
+        GMessage(`上传成功:${file.name}`, {
+          type: "success"
+        })
+      },
+      // 单个文件上传失败
+      onFailed(file: File, res: any) {
+        console.log(`${file.name} 上传失败`, res);
+        GMessage(`${file.name} 上传失败`, {
+          type: "error"
+        })
+      },
+      // 上传错误，或者触发 timeout 超时
+      onError(file: File, err: any, res: any) {
+        console.log(`${file.name} 上传出错`, err, res);
+        GMessage(`${file.name} 上传出错`, {
+          type: "error"
+        })
       },
     },
   },
