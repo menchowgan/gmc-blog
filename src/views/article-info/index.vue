@@ -13,15 +13,6 @@
       />
     </div>
     <div class="body flex column">
-      <div class="edit-btn flex row">
-        <el-button
-          class="btn"
-          type="primary"
-          @click="() => onEdit(curId)"
-        >
-          编辑
-        </el-button>
-      </div>
       <p class="date-p">写于：{{ date }}</p>
       <Editor
         class="editor"

@@ -215,35 +215,30 @@ const options = [
   {
     title: "我的简介 About Me",
     opts: [
-      { label: "编辑 Edit", value: "PERSONNAL_INFO_EDIT" },
       { label: "查看 View", value: "PERSONNAL_INFO_VIEW" },
     ],
   },
   {
     title: "趣文 Articles",
     opts: [
-      { label: "编辑 Edit", value: "ARTICLE_EDIT" },
       { label: "查看 View", value: "ARTICLE_VIEW" },
     ],
   },
   {
     title: "照片 Photos",
     opts: [
-      { label: "编辑 Edit", value: "PHOTO_EDIT" },
       { label: "查看 View", value: "PHOTO_VIEW" },
     ],
   },
   {
     title: "音乐 Music",
     opts: [
-      { label: "上传 Upload", value: "MUSIC_UPLOAD" },
       { label: "查看 View", value: "MUSIC_VIEW" },
     ],
   },
   {
     title: "视频 Video",
     opts: [
-      { label: "编辑 Edit", value: "VIDEO_EDIT" },
       { label: "查看 View", value: "VIDEO_VIEW" },
     ],
   },
