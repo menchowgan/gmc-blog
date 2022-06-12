@@ -108,7 +108,7 @@ watchEffect(() => {
 });
 
 onActivated(async () => {
-  const info = await userManager.getInfo(12);
+  const info = await userManager.getInfo(1);
   if (info) {
     form.id = info.id;
     form.nickname = info.nickname;

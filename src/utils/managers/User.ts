@@ -6,6 +6,14 @@ export default class UserManager {
     
   }
 
+  public getUserId() { 
+    return localStorage.getItem("myblog-userid")
+  }
+
+  public setUserId(id: number) {
+    localStorage.setItem("myblog-userid", String(id))
+  }
+
   public async searchById(id: number): Promise<UserModel | null> {
     try {
       const res = await request("SEARCH_USER_BRIEF", id);
@@ -21,7 +29,7 @@ export default class UserManager {
 
   public async getSimpleInfo(): Promise<UserModel | null> {
     try {
-      const res = await request("GET_USER_SIMPLE_INFO", 12)
+      const res = await request("GET_USER_SIMPLE_INFO", 1)
       if (res && res.data) {
         return res.data
       }
