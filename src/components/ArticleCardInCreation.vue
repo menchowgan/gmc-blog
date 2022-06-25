@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { ref, watchEffect } from "vue"
-import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
+import type { ArticleSimpleInfoModel } from "../utils/interfaces/index";
 import { dateFormat } from "../utils/dateFormat"
 import { useRouter } from "vue-router";
 import NoDataVue from "./common/NoData.vue";

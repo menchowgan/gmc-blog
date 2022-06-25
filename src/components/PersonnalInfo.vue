@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { computed } from "@vue/runtime-core";
-import { UserModel } from "../utils/interfaces/index";
+import type { UserModel } from "../utils/interfaces/index";
 
 const tagTypes = ["success", "info", "warning", "danger"];
 

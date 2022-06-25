@@ -63,7 +63,7 @@
 <script lang="ts" setup>
 import { reactive, ref, watchEffect, onActivated, toRefs } from "vue";
 import { nextTick } from "@vue/runtime-core";
-import { UserModel } from "../utils/interfaces/index";
+import type { UserModel } from "../utils/interfaces/index";
 import type { ElInput } from "element-plus";
 import type { UploadProps } from "element-plus";
 import { ElMessage } from "element-plus";

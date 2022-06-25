@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, toRefs } from "vue";
-import { MusicModel } from "../utils/interfaces/index";
+import type { MusicModel } from "../utils/interfaces/index";
 import type { UploadProps } from "element-plus";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";

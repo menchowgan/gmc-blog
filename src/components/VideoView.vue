@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
-import { VideoModel } from "../utils/interfaces/index";
+import type { VideoModel } from "../utils/interfaces/index";
 
 let videourl = ref<string>("")
 

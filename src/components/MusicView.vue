@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
 import MusicPlayer from "@/components/MusicPlayer.vue";
-import {MusicModel} from "../utils/interfaces/index"
+import type {MusicModel} from "../utils/interfaces/index"
 import NoData from "./common/NoData.vue";
 
 const props = defineProps({
