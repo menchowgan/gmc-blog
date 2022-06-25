@@ -26,9 +26,8 @@
 import { nextTick, ref, watch, watchEffect, onActivated } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, UploadProps, UploadUserFile, ElMessageBox } from "element-plus";
-import { request } from "../utils/http";
 import { useUserInfoStore } from "@/store";
-import { UserModel } from "@/utils/interfaces";
+import { PhotosManager } from "@/utils/managers";
 
 const props = defineProps({
   userid: {
@@ -55,6 +54,8 @@ const props = defineProps({
 const userStore = useUserInfoStore();
 const fileList = ref<UploadUserFile[]>([]);
 
+const photosManager = new PhotosManager()
+
 watchEffect(() => {
   fileList.value = props.photoList as UploadUserFile[];
 });
@@ -75,6 +76,9 @@ watch(
         dialogVisible.value = true;
       });
     }
+  },
+  {
+    immediate: true
   }
 );
 
@@ -104,11 +108,9 @@ const handleRemove: UploadProps["onRemove"] = async (uploadFile, uploadFiles) =>
   console.log(uploadFile, uploadFiles);
   let params = uploadFile.url?.split("/") as Array<string>;
   let url = `${params[params?.length - 2]}/${params[params?.length - 1]}`;
-  const res = await request("DELETE_UPLOAD", {
-    url,
-  });
-  if ((res as any).code === 200) {
-    ElMessage.success((res as any).message);
+  const success = await photosManager.deleteUserPhoto(url)
+  if (success) {
+    ElMessage.success("图片删除成功！");
   }
 };
 

@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { computed } from "@vue/runtime-core";
-import { UserModel } from "../utils/interfaces/index";
+import type { UserModel } from "../utils/interfaces/index";
 
 const tagTypes = ["success", "info", "warning", "danger"];
 
@@ -38,7 +38,7 @@ const props = defineProps({
 })
 
 const fans = computed(() => {
-  return props.user.fans ? props.user.fans : 0;
+  return props.user?.fans || 0;
 });
 
 const gender = computed(() => {
@@ -63,7 +63,7 @@ const hobbies = computed(() => {
   justify-content: flex-start;
   align-items: flex-start;
   background-color: $view-color;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: var(--el-box-shadow);
   .el-avatar {
     margin: 20px;

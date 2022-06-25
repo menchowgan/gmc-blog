@@ -1,22 +1,32 @@
 import { defineStore } from 'pinia';
-import { UserModel } from "../utils/interfaces"
-import { request } from "@/utils/http"
+import { UserModel, PhotoModel } from "../utils/interfaces"
+import { UserManager } from "@/utils/managers"
+
+const userManager = new UserManager()
 
 export const useUserInfoStore = defineStore("userinfo", {
   state: () => ({
-    userInfo: {}
+    userInfo: {} as UserModel
   }),
   actions: {
     async getUserInfo() {
-      try {
-        const res = await request("GET_USER_SIMPLE_INFO", 12)
-        if (res && res.data) {
-          this.userInfo = res?.data as UserModel;
-          console.log("user store get user info: ", this.userInfo);
-        }
-      } catch (e) {
-        
+      const info = await userManager.getSimpleInfo()
+      if (info) {
+        this.userInfo = info as UserModel;
       }
+    }
+  },
+  getters: {
+    photos() {
+      let photos: PhotoModel[] = [];
+      if (this.userInfo.photos && this.userInfo.photos.length) {
+        this.userInfo.photos.forEach((item, index) => {
+          if (index < 6) {
+            photos.push(item);
+          }
+        });
+      }
+      return photos
     }
   }
 })

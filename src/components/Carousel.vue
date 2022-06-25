@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { PhotoModel } from "../utils/interfaces/index"
+import type { PhotoModel } from "../utils/interfaces/index"
 
 const emits = defineEmits(['toPhotos'])
 

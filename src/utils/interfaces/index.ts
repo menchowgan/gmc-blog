@@ -4,7 +4,8 @@ interface ArticleSimpleInfoModel {
   imgUrl?: string
   title?: string
   content?: string
-  date?: string,
+  created_at?: string
+  date?: string
   brief?: string 
   type?: string 
 }
@@ -31,7 +32,7 @@ interface PhotoModel {
 
 interface MusicModel {
   id?: number
-  userId?: string
+  userId?: string | number
   avatar?: string
   audioUrl?: string
   title?: string
@@ -42,7 +43,7 @@ interface MusicModel {
 
 interface VideoModel {
   id?: number
-  userId?: string
+  userId?: string | number
   avatar?: string
   videoUrl?: string
   title?: string
@@ -51,7 +52,7 @@ interface VideoModel {
   paused?: boolean
 }
 
-export {
+export type {
   ArticleSimpleInfoModel,
   UserModel,
   PhotoModel,

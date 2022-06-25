@@ -5,7 +5,7 @@
         <ArtText
           :text="user.nickname"
           fontFamily="'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"
-          :deputyFontStyle="{color: 'white'}"
+          :deputyFontStyle="{ color: 'white' }"
         />
         <div style="width: 100%; height: 100px">
           <HeaderNav @type-selected="onNavTypeSelected" />
@@ -37,7 +37,7 @@
             :fontSize="50"
             fontFamily="'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"
             :artFontSize="55"
-            :deputyFontStyle="{color: 'white'}"
+            :deputyFontStyle="{ color: 'white' }"
             artColor="#3fc7f5"
             color="#ccc"
             text="MY -Photos"
@@ -63,23 +63,17 @@ import ArtText from "@/components/ArtText.vue";
 import { ref, computed, onActivated, h, createVNode } from "vue";
 import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
-import { request } from "../utils/http/index";
 import { useUserInfoStore } from "../store";
-import { GMessage } from "@/plugins";
+import { GMessage, Loading } from "@/plugins";
+import { ArticleManager } from "@/utils/managers";
 
 const user = ref<UserModel>({});
 const userStore = useUserInfoStore();
+const articleManager = new ArticleManager();
 
 const photos = computed(() => {
-  let ps: PhotoModel[] = [];
-  if (user.value.photos && user.value.photos.length) {
-    user.value.photos.forEach((item, index) => {
-      if (index < 6) {
-        ps.push(item);
-      }
-    });
-  }
-  return ps;
+  let photos: PhotoModel[] = userStore.photos;
+  return photos;
 });
 
 const getUserTitle = (nickname: string) => {
@@ -123,7 +117,7 @@ const init = async () => {
   if (user.value.id) {
     GMessage(getUserTitle(user.value.nickname as string), {
       type: "success",
-      timeout: 4000
+      timeout: 4000,
     });
   }
 };
@@ -174,10 +168,10 @@ const onTypeChanged = async (type: string) => {
       });
       return;
     } else {
-      const res = await request("ARTICLE_QUERY_BY_TYPE", `${user.value.id}/${type}`);
-      if (res.code === 200) {
-        user.value.articleSimpleInfos = res.data;
-      }
+      Loading(true)
+      const data = await articleManager.queryByType(user.value.id as number, type);
+      user.value.articleSimpleInfos = data;
+      Loading(false)
     }
   }
 };
@@ -211,6 +205,44 @@ const toPhotos = (photo: PhotoModel) => {
     },
   });
 };
+
+// const connectWebsocket = () => {
+//       if (typeof WebSocket === "undefined") {
+//         console.log("您的浏览器不支持WebSocket");
+//         return;
+//       } else {
+//         let protocol = "ws";
+//         let url = "";
+//         if (window.location.protocol == "https:") {
+//           protocol = "wss";
+//         }
+//         // `${protocol}://window.location.host/echo`;
+//         url = `${protocol}://localhost:8888/ws-test`;
+
+//         // 打开一个websocket
+//         const websocket = new WebSocket(url);
+//         // 建立连接
+//         websocket.onopen = () => {
+//           // 发送数据
+//           (websocket as any).send("发送数据");
+//           console.log("websocket发送数据中");
+//         };
+//         // 客户端接收服务端返回的数据
+//         websocket.onmessage = evt => {
+//           console.log("websocket返回的数据：", evt);
+//         };
+//         // 发生错误时
+//         websocket.onerror = evt => {
+//           console.log("websocket错误：", evt);
+//         };
+//         // 关闭连接
+//         websocket.onclose = evt => {
+//           console.log("websocket关闭：", evt);
+//         };
+//       }
+//     }
+
+// connectWebsocket()
 </script>
 
 <style scoped lang="scss">

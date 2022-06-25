@@ -26,7 +26,7 @@ import PhotoUpload from "@/components/PhotoUpload.vue";
 import MusicUpload from "@/components/MusicUpload.vue";
 import VideoUpload from "@/components/VideoUpload.vue";
 import { useUserInfoStore } from '@/store';
-import { UserModel } from '@/utils/interfaces';
+import type { UserModel } from '@/utils/interfaces';
 
 const userStore = useUserInfoStore()
 const activeName = ref<string>("PERSONNAL_INFO_EDIT")

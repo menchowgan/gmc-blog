@@ -1,5 +1,6 @@
 <template>
   <div class="article-card-in-creation flex column">
+    <NoDataVue v-if="length === 0" />
     <el-card
       shadow="hover"
       class="card flex row"
@@ -19,18 +20,26 @@
 </template>
 
 <script lang="ts" setup>
-import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
+import { ref, watchEffect } from "vue"
+import type { ArticleSimpleInfoModel } from "../utils/interfaces/index";
 import { dateFormat } from "../utils/dateFormat"
 import { useRouter } from "vue-router";
+import NoDataVue from "./common/NoData.vue";
 
 const router = useRouter()
 
-defineProps({
+const length = ref<number>(0)
+
+const props = defineProps({
   articleSimpleInfos: {
     type: Array,
     default: () => [],
   },
 });
+
+watchEffect(() => {
+  length.value = props.articleSimpleInfos?.length || 0
+})
 
 const toArticleInfo = (id: number) => {
   router.push({
@@ -87,6 +96,9 @@ const toArticleInfo = (id: number) => {
         color: #999;
         text-align: left;
         margin-top: 5px;
+        &:hover {
+          @include hover-style;
+        }
       }
       p {
         height: 80%;
@@ -94,6 +106,9 @@ const toArticleInfo = (id: number) => {
         color: #999;
         margin-top: 13px;
         margin-left: 13px;
+        &:hover {
+          @include hover-style;
+        }
       }
       .button {
         flex: 1;

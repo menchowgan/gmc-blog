@@ -1,5 +1,6 @@
 <template>
   <div class="article-card">
+    <NoData v-if="length === 0" />
     <el-card
       shadow="hover"
       class="card"
@@ -21,16 +22,24 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watchEffect } from "vue"
 import { useRouter } from "vue-router";
-import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
+import type { ArticleSimpleInfoModel } from "../utils/interfaces/index";
+import NoData from "./common/NoData.vue";
 const router = useRouter()
 
-defineProps({
+const length = ref<number>(0)
+
+const props = defineProps({
   articleSimpleInfos: {
     type: Array,
-    default: () => [],
+    default: () => ([]),
   },
 });
+
+watchEffect(() => {
+  length.value = props.articleSimpleInfos?.length || 0
+})
 
 const toArticleInfo = (id: number) => {
   router.push({
@@ -77,6 +86,7 @@ const content = (content: string): string => {
         height: 86%;
         margin-top: 30px;
         border-radius: 16px;
+        border: 1px solid $theme-color;
       }
       .section {
         flex: 3;
@@ -97,6 +107,9 @@ const content = (content: string): string => {
           color: #999;
           margin-top: 13px;
           margin-left: 13px;
+          &:hover {
+            @include hover-style;
+          }
         }
         .button {
           flex: 1;

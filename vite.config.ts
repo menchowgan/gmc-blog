@@ -1,11 +1,19 @@
-require("events").EventEmitter.defaultMaxListeners = 0;
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue"
+import path from "path";
 
-module.exports = {
-  lintOnSave: false,
-  publicPath: "./",
-  productionSourceMap: false,
-  devServer: {
+const resolve = (dir: string) => path.join(__dirname, dir)
+
+export default defineConfig({
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      "@": resolve("src")
+    },
+  },
+  server: {
     port: 8080,
+    open: true,
     proxy: {
       '/hello': {
         target: "http://127.0.0.1:8888",
@@ -35,14 +43,6 @@ module.exports = {
         target: "http://127.0.0.1:8888",
         changeOrigin: true
       },
-    },
-  },
-  chainWebpack: config => {
-    config
-      .plugin('html')
-      .tap(args => {
-        args[0].title= 'GMC-BLOG'
-        return args
-      })
+    }
   }
-}
+})

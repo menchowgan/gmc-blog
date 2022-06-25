@@ -1,23 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, h, onMounted } from "vue";
-
-const styleModel = {
-  warn: {
-    color: "#ffcf86",
-    backgroundColor: "ffedd3",
-    borderColor: "rgb(250, 236, 216)",
-  },
-  error: {
-    color: "#F56C6C",
-    backgroundColor: "rgb(254, 240, 240)",
-    borderColor: "rgb(253, 226, 226)",
-  },
-  success: {
-    color: "#3fc7f5",
-    backgroundColor: "#999",
-    borderColor: "#3fc7f5",
-  },
-};
+import { defineComponent, ref, h, onMounted, readonly } from "vue";
 
 export default defineComponent({
   props: {
@@ -39,20 +21,35 @@ export default defineComponent({
     },
   },
   setup(props: any) {
+    const styleModel = readonly({
+      warn: {
+        color: "#ffcf86",
+        borderColor: "#ffcf86",
+      },
+      error: {
+        color: "#ffa8a8",
+        borderColor: "#ffa8a8",
+      },
+      success: {
+        color: "#3fc7f5",
+        borderColor: "#3fc7f5",
+      },
+    });
+
     const out = ref<Boolean>(false);
 
     onMounted(() => {
-      let timeout = props.timeout
+      let timeout = props.timeout;
       if (timeout < 1000) {
-        timeout = 1000
+        timeout = 1000;
       }
       setTimeout(() => {
         out.value = true;
       }, timeout - 500);
     });
 
-    return () => {
-      return h(
+    return () =>
+      h(
         "div",
         {
           class: !out.value ? "g-message" : "out",
@@ -63,7 +60,6 @@ export default defineComponent({
         },
         props.message
       );
-    };
   },
 });
 </script>
@@ -87,6 +83,7 @@ export default defineComponent({
   border-radius: 2vh;
   animation: move 0.5s linear forwards;
   box-shadow: var(--el-box-shadow);
+  background-color: #999;
   .text {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif, STSong;
   }
