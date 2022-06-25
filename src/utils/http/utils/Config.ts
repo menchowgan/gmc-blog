@@ -1,11 +1,9 @@
 interface ConfigModel {
-  [key: string]: {
-    url: string,
-    method: string
-  }
+  url: string,
+  method: string
 }
 
-const CONFIG_METHODS: ConfigModel = {
+const CONFIG_METHODS: Record<string, ConfigModel> = {
   "GET_USER_SIMPLE_INFO": {
     url: "/user/get-user-simple-info",
     method: "get"
