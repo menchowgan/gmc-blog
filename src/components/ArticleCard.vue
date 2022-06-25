@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from "vue"
 import { useRouter } from "vue-router";
-import { ArticleSimpleInfoModel } from "../utils/interfaces/index";
+import type { ArticleSimpleInfoModel } from "../utils/interfaces/index";
 import NoData from "./common/NoData.vue";
 const router = useRouter()
 

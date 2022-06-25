@@ -52,7 +52,7 @@ interface VideoModel {
   paused?: boolean
 }
 
-export {
+export type {
   ArticleSimpleInfoModel,
   UserModel,
   PhotoModel,

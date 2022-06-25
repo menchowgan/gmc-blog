@@ -5,6 +5,7 @@
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
+    "isolatedModules": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "skipLibCheck": true,
@@ -14,7 +15,8 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "element-plus/global"
+      "element-plus/global",
+      "vite/client"
     ],
     "paths": {
       "@/*": [

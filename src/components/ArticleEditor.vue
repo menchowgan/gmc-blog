@@ -60,7 +60,7 @@ import { onBeforeUnmount, ref, shallowRef, onMounted, onActivated } from "vue";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import { IEditorConfig } from "@wangeditor/core";
 import { useUserInfoStore } from "@/store";
-import { UserModel, ArticleSimpleInfoModel } from "../utils/interfaces/index";
+import type { UserModel, ArticleSimpleInfoModel } from "../utils/interfaces/index";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { UploadProps } from "element-plus";
 import { ArticleManager } from "@/utils/managers";
