@@ -9,25 +9,6 @@
 </template>
 
 <style lang="scss">
-body {
-  padding: 0;
-  margin: 0;
-  border: 0;
-  background-image: url("./assets/images/background.webp");
-  background-size:cover;
-  background-attachment: fixed;
-}
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin: 0;
-  padding: 0;
-}
-
 #nav {
   padding: 30px;
   a {

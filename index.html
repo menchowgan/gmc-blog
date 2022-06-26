@@ -8,12 +8,40 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="icon" href="./icon.png">
     <title>GMC BLOG</title>
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background-image: url("./src/assets/images/background.webp");
+        background-size:cover;
+        background-attachment: fixed;
+      }
+      #app {
+        width: 100vw;
+        height: 100vh;
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+        color: #2c3e50;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="./index.css">
   </head>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+    <div id="app">
+      <div class="loading-index">
+        <div class="load-dialog-index">
+          <img class="load-img-index" src="./icon.png" alt="NO DATA!">
+        </div>
+      </div>
+    </div>
     <script type="module" src="./src/main.ts"></script>
     <audio
       id="player" controls style="opacity: 0" preload="auto" loop="true" >

@@ -2,6 +2,8 @@ import { request } from '@/utils/http';
 import { UserModel } from "../interfaces"
 
 export default class UserManager {
+  public static USER_ID = 1
+
   constructor() {
     
   }
@@ -21,7 +23,7 @@ export default class UserManager {
 
   public async getSimpleInfo(): Promise<UserModel | null> {
     try {
-      const res = await request("GET_USER_SIMPLE_INFO", 12)
+      const res = await request("GET_USER_SIMPLE_INFO", UserManager.USER_ID)
       if (res && res.data) {
         return res.data
       }

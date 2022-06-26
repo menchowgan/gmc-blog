@@ -60,7 +60,7 @@ import CollapseSelector from "@/components/CollapseSelector.vue";
 import Carousel from "@/components/Carousel.vue";
 import HeaderNav from "@/components/HeaderNav.vue";
 import ArtText from "@/components/ArtText.vue";
-import { ref, computed, onActivated, h, createVNode } from "vue";
+import { ref, computed, onActivated, h } from "vue";
 import { PhotoModel, UserModel } from "../utils/interfaces/index";
 import { useRouter } from "vue-router";
 import { useUserInfoStore } from "../store";
