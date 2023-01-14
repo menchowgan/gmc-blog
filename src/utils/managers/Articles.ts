@@ -1,4 +1,5 @@
 import { request } from '@/utils/http';
+import { callAsyncWithErrHandler, showError } from '../errHandling';
 import { ArticleSimpleInfoModel } from "../interfaces"
 
 export default class ArticleManager {
@@ -8,44 +9,32 @@ export default class ArticleManager {
    * queryById
    */
   public async queryById(articleId: string): Promise<ArticleSimpleInfoModel | null> {
-    try {
-      const res = await request("ARTICLE_QUERY", articleId);
-      if (res.code === 200) {
-        return res?.data
-      }
+    const res = await callAsyncWithErrHandler(request, ["ARTICLE_QUERY", articleId], (e: Error) => {
+      showError(e)
       return null
-    } catch(e) {
-      return null
-    }
+    })
+    return res.code === 200 ? res?.data : null
   }
 
   public async queryByType(
     userid: number,
     type: string): Promise<Array<ArticleSimpleInfoModel>> {
-    try {
-      const res = await request(
-        "ARTICLE_QUERY_BY_TYPE",
-        `${userid}/${type}`
-      );
-      if (res.code === 200) {
-        return res.data;
-      }
+    const res = await callAsyncWithErrHandler(request, [ 
+      "ARTICLE_QUERY_BY_TYPE",
+      `${userid}/${type}`
+    ], 
+    (e: Error) => {
+      showError(e)
       return []
-    } catch (e) {
-      return []
-    }
+    })
+    return res.code === 200 ? res.data : []
   }
 
   public async articleUpload(params: ArticleSimpleInfoModel): Promise<boolean> {
-    try {
-      const res = await request("ARTICLE_UPLOAD", params);
-      if (res.code === 0) {
-        return true
-      } else {
-        return false
-      }
-    } catch (e) {
+    const res = await callAsyncWithErrHandler(request, ["ARTICLE_UPLOAD", params], (e: Error) => {
+      showError(e)
       return false
-    }
+    })
+    return res.code === 0
   }
 }
