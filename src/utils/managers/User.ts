@@ -1,4 +1,5 @@
 import { request } from '@/utils/http';
+import { callAsyncWithErrHandler, showError } from '../errHandling';
 import { UserModel } from "../interfaces"
 
 export default class UserManager {
@@ -9,63 +10,42 @@ export default class UserManager {
   }
 
   public async searchById(id: number): Promise<UserModel | null> {
-    try {
-      const res = await request("SEARCH_USER_BRIEF", id);
-      if (res && res.data) {
-        console.log("res", res);
-        return res.data;
-      }
+    const res = await callAsyncWithErrHandler(request, ["SEARCH_USER_BRIEF", id], (e: Error) => {
+      showError(e)
       return null
-    } catch (e) {
-      return null
-    }
+    })
+    return res?.data
   }
-
+  
   public async getSimpleInfo(): Promise<UserModel | null> {
-    try {
-      const res = await request("GET_USER_SIMPLE_INFO", UserManager.USER_ID)
-      if (res && res.data) {
-        return res.data
-      }
+    const res = await callAsyncWithErrHandler(request, ["GET_USER_SIMPLE_INFO", UserManager.USER_ID], (e: Error) => {
+      showError(e)
       return null
-    } catch (e) {
-      return null
-    }
+    })
+    return res?.data
   }
 
   /**
    * infoPost
    */
   public async infoPost(info: UserModel): Promise<boolean> {
-    try {
-      const res = await request("POST_USER_INFO", {
-        ...info,
-      });
-      console.log("user info post", res);
-      if (res.code === 0) {
-        return true
-      }
+    const res = await callAsyncWithErrHandler(request, ["POST_USER_INFO", {
+      ...info,
+    }], (e: Error) => {
+      showError(e)
       return false
-    } catch (e) {
-      return false
-    }
+    })
+    return res?.code === 0
   }
 
   /**
    * getInfo
    */
   public async getInfo(userid: number): Promise<UserModel | null> {
-    try {
-      const res = await request("GET_INFO", userid)
-      console.log("get info: ", res);
-      if (res.code === 200) {
-        if (res.data) {
-          return res.data
-        }
-      }
+    const res = await callAsyncWithErrHandler(request, ["GET_INFO", userid], (e: Error) => {
+      showError(e)
       return null
-    } catch (e) {
-      return null
-    }
+    })
+    return res.code === 200 ? res?.data : null
   }
 }
